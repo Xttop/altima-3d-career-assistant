@@ -30,9 +30,32 @@ const modeReplies = {
   manager: 'Jestem w trybie Przełożony AI. Mogę przygotować pytania do rozmowy oceniającej i uporządkować projekt podsumowania.'
 };
 
+// Five distinct real viewpoints, unlike the previous flat CSS rotateY flip.
+// SVG wrappers contain the actual generated photographs and are stored in GitHub.
+const turnFrames = [
+  {src:'assets/altima-front.svg',alt:'ALTIMA — widok z przodu',mirror:false},
+  {src:'assets/altima-front-angle.svg',alt:'ALTIMA — perspektywa trzy czwarte',mirror:false},
+  {src:'assets/altima-right-side.svg',alt:'ALTIMA — profil prawy',mirror:false},
+  {src:'assets/altima-back.svg',alt:'ALTIMA — widok z tyłu',mirror:false},
+  {src:'assets/altima-back.svg',alt:'ALTIMA — widok z tyłu',mirror:true},
+  {src:'assets/altima-right-side.svg',alt:'ALTIMA — profil lewy',mirror:true},
+  {src:'assets/altima-left-angle.svg',alt:'ALTIMA — perspektywa trzy czwarte z lewej',mirror:false},
+  {src:'assets/altima-front.svg',alt:'ALTIMA — widok z przodu',mirror:false},
+];
+const viewerImage = document.getElementById('viewerModel');
+let lastFrame = -1;
+turnFrames.forEach(frame => { const prefetch = new Image(); prefetch.src = frame.src; });
 function applyRotation(deg){
   currentRotation = ((deg % 360) + 360) % 360;
-  viewerModelWrap.style.transform = `translateX(-50%) rotateY(${currentRotation}deg)`;
+  const frameIdx = Math.min(turnFrames.length - 1, Math.floor(currentRotation / 45));
+  if (frameIdx !== lastFrame && viewerImage) {
+    const frame = turnFrames[frameIdx];
+    viewerImage.src = frame.src;
+    viewerImage.alt = frame.alt;
+    viewerImage.style.transform = frame.mirror ? 'scaleX(-1)' : 'scaleX(1)';
+    lastFrame = frameIdx;
+  }
+  viewerModelWrap.style.transform = 'translateX(-50%)';
   if (rotateRange) rotateRange.value = Math.round(currentRotation);
 }
 applyRotation(0);
