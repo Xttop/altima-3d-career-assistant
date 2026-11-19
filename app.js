@@ -167,3 +167,39 @@ function tick(timestamp){
 }
 autoRotateBtn.textContent = 'Wyłącz auto‑obrót';
 requestAnimationFrame(tick);
+
+/* Polish browser voice for the scripted demo, no private audio upload. */
+const voiceBtn=document.getElementById('voiceBtn');
+let voiceOn=false;
+function speakAltima(message){
+ if(!voiceOn || !('speechSynthesis' in window))return;
+ window.speechSynthesis.cancel();
+ const utterance=new SpeechSynthesisUtterance(message);
+ utterance.lang='pl-PL';
+ utterance.rate=1.05;utterance.pitch=1.12;
+ const voices=window.speechSynthesis.getVoices();
+ const pl=voices.find(v=>v.lang.toLowerCase().startsWith('pl') && /female|kobieta|zofia|paulina/i.test(v.name)) || voices.find(v=>v.lang.toLowerCase().startsWith('pl'));
+ if(pl)utterance.voice=pl;
+ window.speechSynthesis.speak(utterance);
+}
+if(voiceBtn){
+ if(!('speechSynthesis' in window)){voiceBtn.disabled=true;voiceBtn.textContent='Głos niedostępny w tej przeglądarce';}
+ else voiceBtn.addEventListener('click',()=>{
+  voiceOn=!voiceOn;
+  voiceBtn.setAttribute('aria-pressed',String(voiceOn));
+  voiceBtn.textContent=voiceOn?'🔇 Wyłącz głos ALTIMA':'🔊 Włącz głos ALTIMA';
+  if(voiceOn)speakAltima('Dzień dobry! Jestem ALTIMA. W czym mogę Ci pomóc?');
+  else window.speechSynthesis.cancel();
+ });
+}
+// Speak newly added scripted assistant messages without changing the form workflow.
+if(chatLog && 'MutationObserver' in window){
+ const observer=new MutationObserver(mutations=>{
+  for(const m of mutations){for(const node of m.addedNodes){
+   if(node.nodeType===1 && node.classList.contains('message') && node.classList.contains('ai')){
+     const bubble=node.querySelector('.bubble');if(bubble)speakAltima(bubble.textContent);
+   }
+  }}
+ });
+ observer.observe(chatLog,{childList:true});
+}
