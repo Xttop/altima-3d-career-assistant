@@ -223,3 +223,12 @@ body{background:#eef6ff}
 .voice-btn[aria-pressed="true"]{background:#0a82b0;color:#fff}
 @media(max-width:1050px){.hero.hero-revamp{grid-template-columns:1fr!important}.hero-revamp-copy{padding:60px 30px 55px}.revamp-scene{min-height:600px}.role-visual-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.hero-revamp-copy{padding:42px 20px 35px}.hero-revamp-copy h1{font-size:49px!important;letter-spacing:-2px!important}.revamp-lead{font-size:16px!important}.revamp-scene{min-height:460px}.rv-figure{width:75%;bottom:30px}.rv-float{max-width:155px;padding:10px}.rv-float strong{font-size:13px}.rv-float small{font-size:10px}.rv-float-one{left:2%;top:11%}.rv-float-two{right:2%;bottom:27%}.revamp-status{font-size:8px}.role-visual-grid{grid-template-columns:1fr}.role-art{height:240px}}
+
+/* 360 multi-view photo gallery: show correct front/profile/back frame */
+.viewer-model{left:50%;bottom:65px;width:min(375px,76vw);height:min(505px,76vh);display:flex;justify-content:center;align-items:end;transform:translateX(-50%);transition:none!important;overflow:hidden;border-radius:18px;user-select:none;touch-action:none;box-shadow:0 0 45px #1baee330}
+.viewer-model img{height:100%;width:100%;object-fit:contain;object-position:center bottom;transition:none!important;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 0 14px #61efff60)}
+.viewer-360{cursor:grab;touch-action:pan-y}
+.viewer-360:active{cursor:grabbing}
+.rv-figure img{object-fit:contain;max-height:580px}
+.stage-girl{object-fit:contain;max-height:460px}
+@media(max-width:720px){.viewer-model{width:250px;height:325px;bottom:62px}}
