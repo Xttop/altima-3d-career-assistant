@@ -232,3 +232,8 @@ body{background:#eef6ff}
 .rv-figure img{object-fit:contain;max-height:580px}
 .stage-girl{object-fit:contain;max-height:460px}
 @media(max-width:720px){.viewer-model{width:250px;height:325px;bottom:62px}}
+
+/* AR glasses visual — dedicated image in third role card */
+.role-art.role-ar-photo{height:265px;padding:0;display:block;overflow:hidden;background:#0a264d}
+.role-art.role-ar-photo img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:saturate(1.18) contrast(1.06)}
+@media(max-width:650px){.role-art.role-ar-photo{height:240px}}
