@@ -282,3 +282,22 @@ body{background:#eef6ff}
 .voice-toolbar .speech-status{display:block;flex:1 1 100%;padding:5px 2px;font-size:12px;line-height:1.5;color:#517d9c}
 @keyframes micPulse{50%{box-shadow:0 0 0 7px #f240652b}}
 @media(max-width:750px){.voice-toolbar{padding:12px}.voice-toolbar .voice-btn{white-space:normal}.voice-toolbar .voice-choice{flex:1 1 44%}.voice-toolbar .voice-choice select{min-width:0;width:100%}}
+
+.voice-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.assistant-stage.speaking .stage-girl {
+  transform-origin: center 70%;
+  animation: altima-speaking 2.6s ease-in-out infinite;
+}
+
+@keyframes altima-speaking {
+  0%, 100% { rotate: 0deg; }
+  50% { rotate: 0.5deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-stage.speaking .stage-girl { animation: none; }
+}

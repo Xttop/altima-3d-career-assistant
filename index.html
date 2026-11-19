@@ -178,23 +178,27 @@
           <div class="chat-header">
             <div>
               <strong>Rozmowa z asystentką</strong>
-              <small>Wersja demonstracyjna po polsku</small>
+              <small>Rozmowa tekstowa i głosowa</small>
             </div>
-            <span class="chat-status">online</span>
+            <span id="chatStatus" class="chat-status">Łączenie…</span>
           </div>
-          <div class="chat-log" id="chatLog">
+          <div class="chat-log" id="chatLog" role="log">
             <div class="message ai"><div class="bubble">Dzień dobry! Jestem ALTIMA AI VISION. Mogę pomóc Ci przygotować ocenę okresową, uporządkować osiągnięcia i zaplanować rozwój kompetencji.</div></div>
           </div>
           <div class="voice-toolbar" aria-label="Ustawienia rozmowy głosowej">
   <button id="voiceBtn" type="button" class="voice-btn" aria-pressed="false">🔊 Włącz głos ALTIMA</button>
   <button id="micBtn" type="button" class="voice-btn mic-btn" aria-pressed="false">🎙️ Rozmawiaj z ALTIMA</button>
-  <label class="voice-choice" for="voiceSelect">Głos <select id="voiceSelect" aria-label="Wybierz polski głos"><option value="">Automatyczny (najlepszy)</option></select></label>
+  <button id="interruptBtn" type="button" class="voice-btn" disabled>Przerwij odpowiedź</button>
+  <label class="voice-choice" for="speechLanguage">Język <select id="speechLanguage"><option value="pl-PL">Polski</option><option value="ru-RU">Русский</option><option value="en-US">English</option></select></label>
+  <label class="voice-choice" for="voiceSelect">Głos <select id="voiceSelect" aria-label="Wybierz głos"><option value="">Automatyczny (najlepszy)</option></select></label>
   <label class="voice-choice" for="voiceSpeed">Tempo <select id="voiceSpeed" aria-label="Tempo mowy"><option value="0.82">Spokojne</option><option value="0.91" selected>Naturalne</option><option value="1">Szybsze</option></select></label>
   <span id="speechStatus" class="speech-status" role="status" aria-live="polite">Włącz głos, a potem użyj mikrofonu, by zadać pytanie.</span>
 </div><div class="quick-prompts">
             <button data-prompt="Pomóż mi przygotować ocenę okresową">Przygotuj ocenę</button>
             <button data-prompt="Chcę przećwiczyć rozmowę z przełożonym">Rozmowa z przełożonym</button>
             <button data-prompt="Jak zaplanować rozwój kompetencji?">Plan rozwoju</button>
+            <button data-prompt="Przeprowadź ze mną próbną rozmowę kwalifikacyjną">Próbna rozmowa</button>
+            <button data-prompt="Pomóż mi przygotować CV">Przygotuj CV</button>
           </div>
           <form id="chatForm" class="chat-form">
             <input id="chatInput" type="text" placeholder="Napisz wiadomość do ALTIMA..." maxlength="400" required />
