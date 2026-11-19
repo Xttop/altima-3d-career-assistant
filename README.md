@@ -30,3 +30,6 @@ Create a **new**, independent repository `altima-3d-career-assistant` in the Git
 5. Investigate compatible Meta eyewear capabilities separately; do not assume full AR holograms work on all models.
 
 **Disclaimer:** prototype visuals and employee data are fictional. No AI-based emotion recognition or automated employment decisions.
+
+
+> Aktualizacja po przyznaniu uprawnień repozytorium: przygotowywany jest interfejs zgodny z prezentacją HackNation 2026.
