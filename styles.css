@@ -240,3 +240,8 @@ body{background:#eef6ff}
 
 /* Actual image in AI Mentor card: male employee with holographic mentor */
 .role-art .role-art-image{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;border:0;border-radius:0}
+
+/* Distinct role imagery — version 4 */
+.role-visual .role-art.role-photo{height:265px;background:#102c59;overflow:hidden;position:relative}
+.role-visual .role-art.role-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(1.12) contrast(1.04);transition:transform .35s ease}
+.role-visual:hover .role-art.role-photo img{transform:scale(1.035)}
