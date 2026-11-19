@@ -141,3 +141,5 @@ img{display:block;max-width:100%}
 
 .viewer-controls strong{color:#9ef9ff}.viewer-controls #speedRange{accent-color:#38e5ff}
 .viewer-360{touch-action:pan-y;cursor:grab}.viewer-360:active{cursor:grabbing}
+/* Wskaźnik wersji do sprawdzania wdrożenia */
+.release-label{display:inline-block!important;background:#ef3049!important;color:#fff!important;border-radius:6px;padding:9px 12px;font-weight:900;font-size:11px;letter-spacing:.6px;box-shadow:0 6px 18px #ef304944}
