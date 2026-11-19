@@ -185,7 +185,13 @@
           <div class="chat-log" id="chatLog">
             <div class="message ai"><div class="bubble">Dzień dobry! Jestem ALTIMA AI VISION. Mogę pomóc Ci przygotować ocenę okresową, uporządkować osiągnięcia i zaplanować rozwój kompetencji.</div></div>
           </div>
-          <div class="voice-toolbar"><button id="voiceBtn" type="button" class="voice-btn" aria-pressed="false">🔊 Włącz głos ALTIMA</button><span>Polski głos syntetyczny • dostępny w obsługiwanych przeglądarkach</span></div><div class="quick-prompts">
+          <div class="voice-toolbar" aria-label="Ustawienia rozmowy głosowej">
+  <button id="voiceBtn" type="button" class="voice-btn" aria-pressed="false">🔊 Włącz głos ALTIMA</button>
+  <button id="micBtn" type="button" class="voice-btn mic-btn" aria-pressed="false">🎙️ Rozmawiaj z ALTIMA</button>
+  <label class="voice-choice" for="voiceSelect">Głos <select id="voiceSelect" aria-label="Wybierz polski głos"><option value="">Automatyczny (najlepszy)</option></select></label>
+  <label class="voice-choice" for="voiceSpeed">Tempo <select id="voiceSpeed" aria-label="Tempo mowy"><option value="0.82">Spokojne</option><option value="0.91" selected>Naturalne</option><option value="1">Szybsze</option></select></label>
+  <span id="speechStatus" class="speech-status" role="status" aria-live="polite">Włącz głos, a potem użyj mikrofonu, by zadać pytanie.</span>
+</div><div class="quick-prompts">
             <button data-prompt="Pomóż mi przygotować ocenę okresową">Przygotuj ocenę</button>
             <button data-prompt="Chcę przećwiczyć rozmowę z przełożonym">Rozmowa z przełożonym</button>
             <button data-prompt="Jak zaplanować rozwój kompetencji?">Plan rozwoju</button>
