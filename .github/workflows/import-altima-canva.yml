@@ -1,0 +1,68 @@
+name: Import ALTIMA Canva slide images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-altima-canva.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import-canva:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout site repository
+        uses: actions/checkout@v4
+      - name: Save final 11 Canva slides as permanent website images
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/canva
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:77696205/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAABNtCyx2yFXQvndYPsSHhzZSLNqjp8sMXq6f63fy1T9U&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0001.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T182622Z%26X-Amz-Expires%3D10280%26X-Amz-Signature%3De98915000cc2b16340be08eb4ff238434e8e0b27715c710ace8ea765046a7b3f%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252021%253A17%253A42%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAABmqMit6viOdcOAffzjLHEUfcLB2qI1ucX2oZaFIdKhv&page=1&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-01.png'
+          test -s 'assets/canva/slide-01.png'
+          file --mime-type 'assets/canva/slide-01.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:442765937/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAORL9hsRFqi7vY_I_kOsZUyw_o_7T2BRwexgwKu-H224&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0002.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T060734Z%26X-Amz-Expires%3D57650%26X-Amz-Signature%3Dbe21be3f36a645fa43f3b6e01f9dbb7a928d7a73c4b4fc60ee701bd0043bafe4%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252022%253A08%253A24%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAMQbN-eVohpCs1lrNSAxszohzXDRLpVc8U43iKhhLV4D&page=2&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-02.png'
+          test -s 'assets/canva/slide-02.png'
+          file --mime-type 'assets/canva/slide-02.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:1136703874/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAKbSQ123cKWanCUQI9LGugW98GrY__g7cHJz9gLJG1KK&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0003.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T154058Z%26X-Amz-Expires%3D22191%26X-Amz-Signature%3Ddab529acc5803298ce16795b53a25fe4cfa2878329bd6b47536b517292983b4e%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252021%253A50%253A49%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAGGQzU9zFEIFpPpy2f0Dw7iq4iA_hVHMqEtC5zMyWNwg&page=3&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-03.png'
+          test -s 'assets/canva/slide-03.png'
+          file --mime-type 'assets/canva/slide-03.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:1803044579/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAAzxEw3MIIdyhI-wwfUW15TpDRQSUrH7MNpFlqDLo70p&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0004.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T150515Z%26X-Amz-Expires%3D25518%26X-Amz-Signature%3D978faa6709b86efcc65970a499e9355b90b834030f166e2ee5bbdd91c9fcc02b%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252022%253A10%253A33%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAERGoTqEDYTD8KOF8rdi7EARSi57KmtR7bUo8_AKOEbu&page=4&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-04.png'
+          test -s 'assets/canva/slide-04.png'
+          file --mime-type 'assets/canva/slide-04.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:1523396611/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAMxOSZ3kzCdz2TDyQpCW2IjfBHKLa94myuZzlBA2RQz8&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0005.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T160044Z%26X-Amz-Expires%3D21954%26X-Amz-Signature%3Dbb6bac66afe05b901e426bb0bb4a4c2d3852c7c64d6ee7eb31f4caa3a583a0d8%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252022%253A06%253A38%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAGeQtdi0kYZND-Qi9ynSstvYfwQLfC-F6m0DEvyI8Y5j&page=5&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-05.png'
+          test -s 'assets/canva/slide-05.png'
+          file --mime-type 'assets/canva/slide-05.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:-2132329231/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAANg5FqdeTZ8kQLwLIG3N1StExO54gun9ZTBxutGJaqiu&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0006.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T061141Z%26X-Amz-Expires%3D57209%26X-Amz-Signature%3D67c99c350cda8d1d485b8e139622ad1f1a54ce1db483336c212fde678dc5a29b%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252022%253A05%253A10%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAM3tOxNqUF9esoSrwjAiHvlhqBNonvaU0uR_Lmjn-yF7&page=6&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-06.png'
+          test -s 'assets/canva/slide-06.png'
+          file --mime-type 'assets/canva/slide-06.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:-235190169/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAHtR7wzvTk0iMEXfpazU9wGvI1VkG0L5gxC86ilAHiRo&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0007.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T112542Z%26X-Amz-Expires%3D37881%26X-Amz-Signature%3D7377137ed5bffdcdd726634d1e8319193f33a82dd3e2387e0ae52ec4be67e78b%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252021%253A57%253A03%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAAnSbb5TpV-WLkCUIrcL-LGnlhXVrAQkrWoLibZ5DieC&page=7&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-07.png'
+          test -s 'assets/canva/slide-07.png'
+          file --mime-type 'assets/canva/slide-07.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:1264656489/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAEfS-gdPKU4TwHu-pvDTB0aly1HgD3xixhvk7C1XFa2l&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0008.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T085143Z%26X-Amz-Expires%3D47475%26X-Amz-Signature%3Daa19f52178c968a5d9ffe417f5090f6204ae53baec051a63eba31e5eb4ff6202%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252022%253A02%253A58%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAPIxUqHaLvZNjeHQnrDgShQfBT92ur5oRAz78HJxFhwf&page=8&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-08.png'
+          test -s 'assets/canva/slide-08.png'
+          file --mime-type 'assets/canva/slide-08.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:-1696358831/height:335/id:DAHbjA8KD9o/type:B/width:595?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAHht83oIeg4R3PcPM5UFAUz4D62ZIX3eO2Ph0-_SUAHi&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F40%2Fthumbnail%2F0009.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T182809Z%26X-Amz-Expires%3D10761%26X-Amz-Signature%3D4b47e2292973474e1b6d947ba60931a63f43a30ed1e662bc4841c5189a3742f8%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252021%253A27%253A30%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAFraKtiERU8o5FdelkGXYmIunOtE17Xd2gZ-LuAmE7uS&page=9&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-09.png'
+          test -s 'assets/canva/slide-09.png'
+          file --mime-type 'assets/canva/slide-09.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:-1175708095/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAMCqTrmcJViB_4pFjrIrt2femn-e9G_NuLRc2ZraJYs2&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F41%2Fthumbnail%2F0010.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261121%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261121T161714Z%26X-Amz-Expires%3D18743%26X-Amz-Signature%3D1b248fd87562818859d01cc29b8729079a00b856b5deff0cd22babc23eb05ac7%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252021%253A29%253A37%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAO8XVDYSOYmAAW4-6YxEl-VlBfJ7sT9SiAHLlUqVDY1S&page=10&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-10.png'
+          test -s 'assets/canva/slide-10.png'
+          file --mime-type 'assets/canva/slide-10.png' | grep -q 'image/'
+          curl -fLSs --retry 3 --connect-timeout 20 --max-time 90 'https://media.canva.com/v2/document-image/hash:-1974067769/height:335/id:DAHbjA8KD9o/type:B/width:596?brand=BAHbKFO9zsA&csig=AAAAAAAAAAAAAAAAAAAAAE3NBCSaEQAcqPaAqWPQLdfm1vw7qxwoWPqjf5BxFn6N&exp=1795299256&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F8KD9o%2FDAHbjA8KD9o%2F34%2Fthumbnail%2F0011.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHW27RK5IK%252F20261120%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261120T221136Z%26X-Amz-Expires%3D83767%26X-Amz-Signature%3D8ee89b22aa4f393399af970186eb98c6a3fabe9fe9506a386fcd434250b57a2c%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DSat%252C%252021%2520Nov%25202026%252021%253A27%253A43%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAAJpM99E4z3CqssUsnTTKB7Kz8qigTQwVGK-0FAoOM5f&page=11&signed=brand%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=41' -o 'assets/canva/slide-11.png'
+          test -s 'assets/canva/slide-11.png'
+          file --mime-type 'assets/canva/slide-11.png' | grep -q 'image/'
+          echo 'All 11 Canva slide previews successfully retrieved.'
+      - name: Commit local images for stable website URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/canva
+          if git diff --cached --quiet; then
+            echo "Images already present"
+            exit 0
+          fi
+          git commit -m "Store 11 final Canva slide images for ALTIMA website"
+          git push
