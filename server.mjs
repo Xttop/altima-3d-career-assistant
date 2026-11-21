@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 
 const root = new URL('./', import.meta.url);
 const maxBodyBytes = 100_000;
-const languages = { 'pl-PL': 'Polish', 'ru-RU': 'Russian', 'en-US': 'English' };
+const languages = { 'pl-PL': 'Polish', 'uk-UA': 'Ukrainian', 'en-US': 'English' };
 const roles = {
   colleague: 'Be a practical colleague who helps organize information and identify next steps.',
   mentor: 'Be a supportive career mentor who coaches skills and professional development.',
