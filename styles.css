@@ -598,3 +598,41 @@ html{scroll-behavior:smooth}
   .glasses-view .topbar { flex-wrap: wrap; }
   .glasses-view .glasses-exit { width: auto; }
 }
+
+.camera-tools {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.camera-tools p { margin: 8px 0 0; font-size: 13px; }
+.camera-tools p:empty { display: none; }
+
+#cameraVideo, #cameraStill {
+  width: 100%;
+  max-height: 220px;
+  margin-top: 10px;
+  border-radius: var(--control-radius);
+  background: var(--navy);
+  object-fit: contain;
+}
+
+#cameraStill[hidden] { display: none; }
+
+.camera-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.camera-tools .voice-btn {
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: var(--white);
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+.camera-tools .voice-btn:hover:not(:disabled) { background: var(--cyan-soft); }

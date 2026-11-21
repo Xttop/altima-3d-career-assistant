@@ -46,6 +46,19 @@ test('chat validates turns, forwards context and reports provider failures', asy
   assert.deepEqual(upstreamBody.input, messages);
   assert.match(upstreamBody.instructions, /Ukrainian/);
   assert.equal(upstreamBody.store, false);
+  const image = 'data:image/jpeg;base64,/9j/2Q==';
+  assert.equal((await send({ image: 'https://example.com/frame.jpg' })).status, 400);
+  assert.equal((await send({ image: 'data:image/jpeg;base64,/9j/' + 'A'.repeat(360_000) })).status, 400);
+  assert.equal((await send({ image })).status, 200);
+  assert.deepEqual(upstreamBody.input, [
+    ...messages.slice(0, -1),
+    { role: 'user', content: [
+      { type: 'input_text', text: messages.at(-1).content },
+      { type: 'input_image', image_url: image, detail: 'low' },
+    ] },
+  ]);
+  assert.equal((await send()).status, 200);
+  assert.deepEqual(upstreamBody.input, messages);
   status = 429;
   assert.equal((await send()).status, 429);
   status = 500;

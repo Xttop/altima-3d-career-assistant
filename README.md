@@ -135,3 +135,14 @@ full appraisal form and voice chat, return to the regular browser view.
 The AR button appears on browsers that report support for `immersive-ar`.
 The app displays instructional cards and does not access camera frames.
 This is a WebXR experience for Quest Browser. It requires no APK.
+
+### Camera input
+
+Use **Włącz kamerę** over HTTPS or on localhost, choose **Zrób zdjęcie**, and
+check the preview. Use **Wyślij zdjęcie do AI** to send the selected JPEG
+and the question from the chat box to the configured OpenAI model. The
+camera preview is local and the app does not stream video to OpenAI.
+The server forwards the selected image with `store: false`; the image is
+not included in subsequent chat requests. Select a model that supports
+image input when overriding `OPENAI_MODEL`. The web camera feature is
+separate from the immersive Quest guide.

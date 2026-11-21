@@ -451,7 +451,7 @@ function deliverReply(reply) {
   speak(reply);
 }
 
-async function sendMessage(text) {
+async function sendMessage(text, image) {
   cancelRecognition();
   interruptReply();
   const controller = new AbortController();
@@ -459,7 +459,7 @@ async function sendMessage(text) {
   const language = languageSelect.value;
   const mode = currentMode;
   const user = { role: 'user', content: text.slice(0, 2000) };
-  addMessage(user.content, 'user');
+  addMessage(image ? user.content + ' [zdjęcie z kamery]' : user.content, 'user');
   updateInterrupt();
   setSpeechStatus('ALTIMA przygotowuje odpowiedź…');
   try {
@@ -473,7 +473,7 @@ async function sendMessage(text) {
     const response = await fetch('./api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ language, mode, messages: [...history, user] }),
+      body: JSON.stringify({ language, mode, messages: [...history, user], image }),
       signal: controller.signal,
     });
     const data = await response.json();
@@ -601,3 +601,128 @@ if ('serviceWorker' in navigator && window.isSecureContext) {
     console.warn('Nie udało się zarejestrować aplikacji ALTIMA.', error);
   });
 }
+
+const cameraToggle = document.getElementById('cameraToggle');
+const cameraPreview = document.getElementById('cameraPreview');
+const cameraVideo = document.getElementById('cameraVideo');
+const cameraStill = document.getElementById('cameraStill');
+const cameraCapture = document.getElementById('cameraCapture');
+const cameraDiscard = document.getElementById('cameraDiscard');
+const cameraSend = document.getElementById('cameraSend');
+const cameraStatus = document.getElementById('cameraStatus');
+let cameraStream;
+let cameraAttempt = 0;
+let cameraFrame;
+
+function clearCameraFrame() {
+  cameraFrame = undefined;
+  cameraStill.removeAttribute('src');
+  cameraStill.hidden = true;
+  cameraDiscard.disabled = true;
+  cameraSend.disabled = true;
+}
+
+function stopCamera() {
+  cameraAttempt++;
+  cameraStream?.getTracks().forEach(track => track.stop());
+  cameraStream = undefined;
+  cameraVideo.srcObject = null;
+  cameraPreview.hidden = true;
+  cameraCapture.disabled = true;
+  cameraToggle.disabled = !navigator.mediaDevices?.getUserMedia;
+  cameraToggle.setAttribute('aria-pressed', 'false');
+  cameraToggle.textContent = 'Włącz kamerę';
+  clearCameraFrame();
+}
+
+if (!navigator.mediaDevices?.getUserMedia) {
+  cameraToggle.disabled = true;
+  cameraStatus.textContent = 'Kamera wymaga HTTPS i obsługi w przeglądarce.';
+}
+
+cameraToggle.addEventListener('click', async () => {
+  if (cameraStream) {
+    stopCamera();
+    cameraStatus.textContent = 'Kamera wyłączona.';
+    return;
+  }
+  const attempt = ++cameraAttempt;
+  cameraToggle.disabled = true;
+  cameraStatus.textContent = 'Czekam na dostęp do kamery…';
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 640 }, height: { ideal: 480 } },
+      audio: false,
+    });
+    if (attempt !== cameraAttempt) {
+      stream.getTracks().forEach(track => track.stop());
+      return;
+    }
+    cameraStream = stream;
+    for (const track of stream.getVideoTracks()) {
+      track.addEventListener('ended', () => {
+        if (cameraStream !== stream) return;
+        stopCamera();
+        cameraStatus.textContent = 'Połączenie z kamerą zakończyło się.';
+      });
+    }
+    cameraPreview.hidden = false;
+    cameraVideo.srcObject = stream;
+    cameraToggle.disabled = false;
+    cameraToggle.setAttribute('aria-pressed', 'true');
+    cameraToggle.textContent = 'Wyłącz kamerę';
+    cameraStatus.textContent = 'Podgląd jest widoczny tylko na Twoim urządzeniu.';
+  } catch (error) {
+    if (attempt !== cameraAttempt) return;
+    stopCamera();
+    cameraStatus.textContent = error.name === 'NotAllowedError'
+      ? 'Zezwól na dostęp do kamery w ustawieniach przeglądarki.'
+      : 'Kamera jest niedostępna lub używana przez inną aplikację.';
+  }
+});
+
+cameraVideo.addEventListener('loadeddata', () => {
+  cameraCapture.disabled = !cameraStream;
+});
+
+cameraCapture.addEventListener('click', async () => {
+  if (!cameraStream || !cameraVideo.videoWidth) return;
+  const canvas = document.createElement('canvas');
+  const scale = Math.min(1, 640 / Math.max(cameraVideo.videoWidth, cameraVideo.videoHeight));
+  canvas.width = Math.max(1, Math.round(cameraVideo.videoWidth * scale));
+  canvas.height = Math.max(1, Math.round(cameraVideo.videoHeight * scale));
+  canvas.getContext('2d').drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+  let frame = canvas.toDataURL('image/jpeg', 0.72);
+  if (frame.length > 360_000) frame = canvas.toDataURL('image/jpeg', 0.45);
+  if (!frame.startsWith('data:image/jpeg;base64,') || frame.length > 360_000) {
+    cameraStatus.textContent = 'Nie udało się przygotować zdjęcia. Spróbuj ponownie.';
+    return;
+  }
+  cameraFrame = frame;
+  cameraStill.src = frame;
+  cameraStill.hidden = false;
+  cameraDiscard.disabled = false;
+  const available = await service;
+  if (cameraFrame !== frame) return;
+  cameraSend.disabled = available !== 'live';
+  cameraStatus.textContent = available === 'live'
+    ? 'Zdjęcie gotowe. Możesz wpisać pytanie i wysłać zdjęcie do AI.'
+    : 'Zdjęcie pozostaje na urządzeniu. Wysyłanie wymaga działającej usługi AI.';
+});
+
+cameraDiscard.addEventListener('click', () => {
+  clearCameraFrame();
+  cameraStatus.textContent = 'Zdjęcie usunięte.';
+});
+
+cameraSend.addEventListener('click', () => {
+  if (!cameraFrame || chatMode !== 'live') return;
+  const question = chatInput.value.trim() || 'Opisz, co widać na zdjęciu, i zapytaj, w czym możesz pomóc.';
+  const frame = cameraFrame;
+  chatInput.value = '';
+  clearCameraFrame();
+  cameraStatus.textContent = 'Zdjęcie dołączono do wiadomości.';
+  sendMessage(question, frame);
+});
+
+window.addEventListener('pagehide', stopCamera);

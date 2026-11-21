@@ -264,6 +264,20 @@
             </div>
             <span id="chatStatus" class="chat-status">Łączenie…</span>
           </div>
+          <div class="camera-tools">
+            <button id="cameraToggle" class="voice-btn" type="button" aria-pressed="false">Włącz kamerę</button>
+            <div id="cameraPreview" hidden>
+              <video id="cameraVideo" autoplay muted playsinline aria-label="Podgląd kamery"></video>
+              <img id="cameraStill" alt="Kadr wybrany do wysłania do ALTIMA" hidden />
+              <div class="camera-actions">
+                <button id="cameraCapture" class="voice-btn" type="button" disabled>Zrób zdjęcie</button>
+                <button id="cameraDiscard" class="voice-btn" type="button" disabled>Usuń zdjęcie</button>
+                <button id="cameraSend" class="voice-btn" type="button" disabled>Wyślij zdjęcie do AI</button>
+              </div>
+              <p>Do AI trafi tylko wybrane zdjęcie wraz z pytaniem z pola rozmowy. Używaj danych przykładowych.</p>
+            </div>
+            <p id="cameraStatus" role="status"></p>
+          </div>
           <div class="chat-log" id="chatLog" role="log">
             <div class="message ai"><div class="bubble">Dzień dobry! Jestem ALTIMA AI VISION. Mogę pomóc Ci przygotować ocenę okresową, uporządkować osiągnięcia i zaplanować rozwój kompetencji.</div></div>
           </div>
