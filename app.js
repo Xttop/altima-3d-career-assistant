@@ -1,4 +1,4 @@
-const modeButtons = document.querySelectorAll('.mode');
+const modeButtons = document.querySelectorAll('[data-mode]');
 const chatLog = document.getElementById('chatLog');
 const chatForm = document.getElementById('chatForm');
 const chatInput = document.getElementById('chatInput');
@@ -91,11 +91,27 @@ function demoReply(prompt){
   return modeReplies[currentMode];
 }
 
-modeButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    modeButtons.forEach(b => b.classList.toggle('active', b === btn));
-    currentMode = btn.dataset.mode;
+function selectMode(mode) {
+  currentMode = mode;
+  modeButtons.forEach(button => {
+    const selected = button.dataset.mode === mode;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+}
+
+selectMode(currentMode);
+modeButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    selectMode(button.dataset.mode);
     if (chatMode === 'demo') deliverReply(modeReplies[currentMode]);
+  });
+});
+
+document.querySelectorAll('[data-role-shortcut]').forEach(button => {
+  button.addEventListener('click', () => {
+    selectMode(button.dataset.roleShortcut);
+    focusDemoField(chatInput);
   });
 });
 
@@ -125,9 +141,7 @@ function updateCriteriaLimit(){
 criteriaBoxes.forEach(box => box.addEventListener('change',updateCriteriaLimit));
 updateCriteriaLimit();
 
-/* Accessible navigation from the four editorial process icons into the real
-   capabilities of the public demonstration. No fake server actions. */
-const featureButtons = Array.from(document.querySelectorAll('.ape-feature-button'));
+const featureButtons = Array.from(document.querySelectorAll('[data-demo-target]'));
 const featureStatus = document.getElementById('apeFeatureStatus');
 const demoForm = document.querySelector('#demo .evaluation-box');
 const scenarioTargets = {
@@ -149,6 +163,18 @@ const scenarioTargets = {
     status:'Otworzono etap rozmów. Wybierz rozmowę rozpoczynającą lub oceniającą.',
     response:'Przygotujmy rozmowę. Możesz wybrać rozmowę rozpoczynającą lub oceniającą i omówić cele, osiągnięcia oraz oczekiwania. Wybór etapu znajdziesz w formularzu.'
   },
+  criteria: {
+    stage: 'Rozmowa rozpoczynająca',
+    field: 'criteriaStatus',
+    status: 'Możesz zaznaczyć maksymalnie trzy dodatkowe kryteria.',
+    response: 'Wybierz do trzech dodatkowych kryteriów, które najlepiej opisują oczekiwania wobec stanowiska.'
+  },
+  review: {
+    stage: 'Rozmowa oceniająca',
+    field: 'evaluationStage',
+    status: 'Otworzono etap rozmowy oceniającej.',
+    response: 'Podczas rozmowy oceniającej omów konkretne przykłady pracy, informację zwrotną i cele na kolejny okres.'
+  },
   report: {
     stage:'Podsumowanie i rozwój',
     field:'draftOutput',
@@ -169,16 +195,40 @@ featureButtons.forEach(btn=>{
     if(featureStatus) featureStatus.textContent=action.status;
     if(btn.dataset.demoTarget==='report') buildReport();
     addMessage(action.response,'ai');
-    const field=document.getElementById(action.field);
-    const target=field || demoForm;
-    const reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    target.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});
-    if(field){
-      if(field.id==='draftOutput' && !field.hasAttribute('tabindex')) field.setAttribute('tabindex','-1');
-      field.focus({preventScroll:true});
-    }
+    const field = action.field === 'criteriaStatus'
+      ? criteriaBoxes.find(box => !box.disabled)
+      : document.getElementById(action.field);
+    focusDemoField(field || demoForm);
   });
 });
+
+function focusDemoField(field) {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  field.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+  if (field.tabIndex < 0) field.tabIndex = -1;
+  field.focus({ preventScroll: true });
+}
+
+const iconDetails = {
+  deadlines: ['Terminy i powiadomienia', 'W formularzu demo możesz wybrać etap oceny i wpisać okres. Automatyczne przypomnienia i powiadomienia są planowane.'],
+  staff: ['Zmiany kadrowe', 'Zmiana przełożonego, zakresu zadań lub dłuższa nieobecność mogą wpłynąć na przebieg oceny. W prototypie możesz opisać sytuację w obserwacjach.'],
+  ar: ['Okulary AR', 'To koncepcja wskazówek wyświetlanych w polu widzenia. Obecny prototyp umożliwia rozmowę w przeglądarce.'],
+  access: ['Dostęp według uprawnień', 'Docelowy dostęp zależy od roli pracownika, przełożonego lub kadr. W publicznym demo korzystaj wyłącznie z przykładowych danych.'],
+  privacy: ['RODO i bezpieczeństwo', 'Używaj fikcyjnych danych. Przed wdrożeniem urząd musi zweryfikować uprawnienia, sposób przetwarzania i ochronę danych.'],
+  approval: ['Człowiek zatwierdza ocenę', 'W demo ALTIMA tworzy projekt do pobrania jako TXT. Formalną ocenę sprawdza i zatwierdza uprawniona osoba.'],
+};
+
+const detailsDialog = document.getElementById('iconDetails');
+document.querySelectorAll('[data-icon-detail]').forEach(button => {
+  button.setAttribute('aria-haspopup', 'dialog');
+  button.addEventListener('click', () => {
+    const [title, description] = iconDetails[button.dataset.iconDetail];
+    document.getElementById('iconDetailsTitle').textContent = title;
+    document.getElementById('iconDetailsText').textContent = description;
+    detailsDialog.showModal();
+  });
+});
+
 function buildReport(){
   const employee = document.getElementById('employeeName').value.trim() || '(nie podano)';
   const period = document.getElementById('evaluationPeriod').value.trim() || '(nie podano)';

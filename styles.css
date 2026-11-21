@@ -159,7 +159,7 @@ body{background:#eef6ff}
 .revamp-actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:36px}
 .btn-glass{color:#efffff!important;background:#47d7ff25!important;border:1px solid #72e4ffad!important}
 .revamp-proof{display:flex;flex-wrap:wrap;gap:14px;margin-top:44px}
-.revamp-proof span{font-size:14px;font-weight:800;color:#d9f8ff;background:#ffffff10;border:1px solid #8cecff45;border-radius:11px;padding:14px 17px}
+.revamp-proof button{font-size:14px;font-weight:800;color:#d9f8ff;background:#ffffff10;border:1px solid #8cecff45;border-radius:11px;padding:14px 17px}
 .revamp-proof b{color:#66efff;margin-right:7px}
 .revamp-status{display:flex;flex-wrap:wrap;gap:18px;margin-top:34px;color:#6ce7ef;font-size:10px;letter-spacing:1.5px;font-weight:800}
 .revamp-scene{min-height:690px;position:relative;background:radial-gradient(ellipse at 52% 45%,#278ee0c2 0%,#103867 43%,#081b3b 74%,#07152e 100%);overflow:hidden}
@@ -321,8 +321,8 @@ html{scroll-behavior:smooth}
 .altima-process{padding:85px clamp(16px,4vw,62px) 100px;background:#fff}
 .altima-process-shell>p{max-width:920px}
 .process-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;counter-reset:none;list-style:none;padding:0;margin:34px 0}
-.process-steps li{position:relative;display:flex;flex-direction:column;gap:9px;padding:24px;background:#f2f9fd;border:1px solid #d2e8f6;border-radius:17px;min-height:164px}
-.process-steps li>span{font-size:13px;font-weight:900;letter-spacing:1.6px;color:#089ac4}
+.process-steps li{position:relative;display:flex;background:#f2f9fd;border:1px solid #d2e8f6;border-radius:17px;min-height:164px}
+.process-step>span{font-size:13px;font-weight:900;letter-spacing:1.6px;color:#089ac4}
 .process-steps li strong{font-size:21px;line-height:1.25;color:#15365c}
 .process-steps li small{font-size:14px;line-height:1.5;color:#52728a}
 .altima-process .process-disclaimer{font-size:13px;max-width:none;color:#6c8092;background:#f4f8fa;border-left:3px solid #e43d60;padding:15px 17px;border-radius:4px}
@@ -378,7 +378,7 @@ html{scroll-behavior:smooth}
 .altima-trust{padding:90px clamp(18px,5vw,85px);background:#f1f9ff}
 .trust-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin:29px 0}
 .trust-grid article{background:#fff;border:1px solid #d5e8f5;border-radius:18px;padding:24px;box-shadow:0 10px 30px #12395d0d}
-.trust-grid article>span{display:grid;place-items:center;background:#dff8ff;color:#0878a2;width:54px;height:54px;font-size:27px;border-radius:14px}
+.trust-icon{display:grid;place-items:center;background:#dff8ff;color:#0878a2;width:54px;height:54px;font-size:27px;border-radius:14px}
 .trust-grid h3{font-size:20px;color:#133b67;margin:15px 0 9px}
 .trust-grid p{font-size:14px;line-height:1.75;color:#57738b;margin:0}
 .altima-trust-inner>p.trust-note{font-size:13px;line-height:1.7;color:#506e87;border-left:3px solid #e94466;background:#fff;padding:16px 18px;margin:18px 0 0;border-radius:7px}
@@ -438,3 +438,48 @@ html{scroll-behavior:smooth}
 .ape-feature-status{max-width:505px;margin:14px 0 0;padding:9px 12px;border-left:3px solid #e73551;border-radius:4px;background:#effaff;color:#315b7b;font-size:12px;line-height:1.6}
 @media(max-width:760px){.ape-feature-button{gap:9px;padding:6px}.ape-feature-arrow{flex-basis:21px;width:21px;height:21px}.ape-feature-status{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.ape-feature-button,.ape-feature-arrow{transition:none}.ape-feature-button:hover,.ape-feature-button.is-active{transform:none}}
+
+.brand { text-decoration: none; }
+
+.icon-action {
+  border-style: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.revamp-proof button, .stage-tag { border-style: solid; }
+
+.process-step {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 24px;
+  border-radius: inherit;
+  background: transparent;
+  text-align: left;
+}
+
+.icon-action:hover, .process-step.is-active, .assistant-stage .stage-tag.active,
+.assistant-stage .stage-tag:hover {
+  box-shadow: inset 0 0 0 2px #27b8dc;
+}
+
+.icon-action:focus-visible, .brand:focus-visible {
+  outline: 3px solid #eb3554;
+  outline-offset: 3px;
+}
+
+.icon-details {
+  max-width: min(460px, calc(100% - 32px));
+  padding: 24px;
+  border: 1px solid #9bdfed;
+  border-radius: 18px;
+  color: #15365c;
+}
+
+.icon-details p { line-height: 1.6; }
+.icon-details::backdrop { background: #0b214386; }
+
+.rv-float.icon-action { border-style: solid; text-align: left; }

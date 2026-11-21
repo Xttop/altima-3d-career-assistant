@@ -12,13 +12,13 @@
   <div class="site-bg-glow glow-b"></div>
 
   <header class="topbar">
-    <div class="brand">
+    <a class="brand" href="#start">
       <img class="brand-mark" src="assets/altima-logo.webp" width="63" height="63" alt="">
       <div class="brand-text">
         <strong>ALTIMA AI VISION</strong>
         <small>CYFROWY ASYSTENT OCEN OKRESOWYCH</small>
       </div>
-    </div>
+    </a>
     <nav class="topnav">
       <a href="#start">Start</a>
       <a href="#role-wizualizacje">Zastosowania</a>
@@ -42,14 +42,14 @@
       <a href="#demo" class="btn btn-primary">✦ Porozmawiaj z ALTIMA</a>
       <a href="#proces" class="btn btn-glass">Jak działa ocena? <span>↗</span></a>
     </div>
-    <div class="revamp-proof"><span><b>01</b> Pracownik</span><span><b>02</b> Przełożony</span><span><b>03</b> Kadry HR</span></div>
+    <div class="revamp-proof"><button type="button" class="icon-action" data-role-shortcut="colleague"><b>01</b> Pracownik</button><button type="button" class="icon-action" data-role-shortcut="manager"><b>02</b> Przełożony</button><button type="button" class="icon-action" data-role-shortcut="mentor"><b>03</b> Kadry HR</button></div>
     <div class="revamp-status"><span>● PROTOTYP DEMONSTRACYJNY</span><span>INTERFEJS PO POLSKU</span><span>WERSJA 3.0</span></div>
   </div>
   <div class="revamp-scene">
     <div class="rv-ring rv-ring-one"></div><div class="rv-ring rv-ring-two"></div><div class="rv-grid"></div>
     <div class="rv-figure"><img src="altima-girl.svg" alt="ALTIMA — wirtualna asystentka w niebieskim garniturze" /></div>
-    <div class="rv-float rv-float-one"><span>✧ MENTOR AI</span><strong>Plan rozwoju</strong><small>Kompetencje • Cele • Postępy</small></div>
-    <div class="rv-float rv-float-two"><span>◈ OCENA OKRESOWA</span><strong>Rozmowa rozwojowa</strong><small>Pracownik + Przełożony</small></div>
+    <button type="button" class="rv-float rv-float-one icon-action" data-role-shortcut="mentor"><span>✧ MENTOR AI</span><strong>Plan rozwoju</strong><small>Kompetencje • Cele • Postępy</small></button>
+    <button type="button" class="rv-float rv-float-two icon-action" data-demo-target="review"><span>◈ OCENA OKRESOWA</span><strong>Rozmowa rozwojowa</strong><small>Pracownik + Przełożony</small></button>
     <div class="rv-label">ALTIMA <b>AI VISION</b></div>
   </div>
   <div class="revamp-wave"></div>
@@ -110,12 +110,12 @@
       <figcaption>ALTIMA wspiera pracownika, przełożonego i kadry. Końcową ocenę sporządza i zatwierdza uprawniona osoba.</figcaption>
     </figure>
     <ol class="process-steps">
-      <li><span>01</span><strong>Arkusz A / B / C</strong><small>Wybór zgodny ze stanowiskiem</small></li>
-      <li><span>02</span><strong>Kryteria oceny</strong><small>W tym maks. 3 dodatkowe</small></li>
-      <li><span>03</span><strong>Rozmowa rozpoczynająca</strong><small>Oczekiwania i przygotowanie</small></li>
-      <li><span>04</span><strong>Obserwacje</strong><small>Notatki przez okres oceny</small></li>
-      <li><span>05</span><strong>Rozmowa oceniająca</strong><small>Wnioski i informacja zwrotna</small></li>
-      <li><span>06</span><strong>Dokument i rozwój</strong><small>Projekt, wydruk, podpisy</small></li>
+      <li><button type="button" class="process-step icon-action" data-demo-target="forms"><span>01</span><strong>Arkusz A / B / C</strong><small>Wybór zgodny ze stanowiskiem</small></button></li>
+      <li><button type="button" class="process-step icon-action" data-demo-target="criteria"><span>02</span><strong>Kryteria oceny</strong><small>W tym maks. 3 dodatkowe</small></button></li>
+      <li><button type="button" class="process-step icon-action" data-demo-target="interview"><span>03</span><strong>Rozmowa rozpoczynająca</strong><small>Oczekiwania i przygotowanie</small></button></li>
+      <li><button type="button" class="process-step icon-action" data-demo-target="notes"><span>04</span><strong>Obserwacje</strong><small>Notatki przez okres oceny</small></button></li>
+      <li><button type="button" class="process-step icon-action" data-demo-target="review"><span>05</span><strong>Rozmowa oceniająca</strong><small>Wnioski i informacja zwrotna</small></button></li>
+      <li><button type="button" class="process-step icon-action" data-demo-target="report"><span>06</span><strong>Dokument i rozwój</strong><small>Projekt, wydruk, podpisy</small></button></li>
     </ol>
     <p class="process-disclaimer">Obecna strona jest prototypem demonstracyjnym. Pełne arkusze, kontrola uprawnień i integracje urzędowe wymagają dalszej implementacji i walidacji prawnej.</p>
   </div>
@@ -128,10 +128,10 @@
     <h2 id="automation-title">Od przypomnienia o terminie do gotowego projektu.</h2>
     <p>ALTIMA ma ograniczać powtarzalną pracę administracyjną w małych i dużych urzędach. Najważniejsze funkcje przewidziane w docelowym rozwiązaniu:</p>
     <div class="automation-grid">
-      <article class="automation-tile"><span aria-hidden="true" class="auto-icon">◷</span><h3>Terminy i powiadomienia</h3><p>Przypomnienia o rozmowach, kolejnych etapach i brakujących elementach oceny.</p></article>
-      <article class="automation-tile"><span aria-hidden="true" class="auto-icon">▤</span><h3>Formularze i dokumenty</h3><p>Wybór arkusza A/B/C, edycja pól oraz przygotowanie pliku do eksportu i wydruku.</p></article>
-      <article class="automation-tile"><span aria-hidden="true" class="auto-icon">✎</span><h3>Notatki z obserwacji</h3><p>Uporządkowanie informacji o pracy podczas okresu oceny, zasadniczo 24 miesięcy.</p></article>
-      <article class="automation-tile"><span aria-hidden="true" class="auto-icon">⇄</span><h3>Zmiany kadrowe</h3><p>Uwzględnianie zmiany przełożonego, zakresu zadań lub długiej nieobecności.</p></article>
+      <article class="automation-tile"><button type="button" class="auto-icon icon-action" data-icon-detail="deadlines" aria-label="Sprawdź działanie przypomnień"><span aria-hidden="true">◷</span></button><h3>Terminy i powiadomienia</h3><p>Przypomnienia o rozmowach, kolejnych etapach i brakujących elementach oceny.</p></article>
+      <article class="automation-tile"><button type="button" class="auto-icon icon-action" data-demo-target="forms" aria-label="Otwórz formularze A/B/C"><span aria-hidden="true">▤</span></button><h3>Formularze i dokumenty</h3><p>Wybór arkusza A/B/C, edycja pól oraz przygotowanie pliku do eksportu i wydruku.</p></article>
+      <article class="automation-tile"><button type="button" class="auto-icon icon-action" data-demo-target="notes" aria-label="Otwórz notatki z obserwacji"><span aria-hidden="true">✎</span></button><h3>Notatki z obserwacji</h3><p>Uporządkowanie informacji o pracy podczas okresu oceny, zasadniczo 24 miesięcy.</p></article>
+      <article class="automation-tile"><button type="button" class="auto-icon icon-action" data-icon-detail="staff" aria-label="Zobacz przykłady zmian kadrowych"><span aria-hidden="true">⇄</span></button><h3>Zmiany kadrowe</h3><p>Uwzględnianie zmiany przełożonego, zakresu zadań lub długiej nieobecności.</p></article>
     </div>
   </div>
 </section>
@@ -150,22 +150,22 @@
 
       <div class="feature-grid">
         <article class="feature-card">
-          <div class="icon">◎</div>
+          <button type="button" class="icon icon-action" data-demo-target="interview" aria-label="Przygotuj się do rozmowy oceniającej"><span aria-hidden="true">◎</span></button>
           <h3>Asystent pracownika</h3>
           <p>Wyjaśnia zasady, wspiera przygotowanie do rozmowy oceniającej i pomaga opisać osiągnięcia bez zagłębiania się w formularze.</p>
         </article>
         <article class="feature-card">
-          <div class="icon">◈</div>
+          <button type="button" class="icon icon-action" data-demo-target="notes" aria-label="Otwórz obserwacje przełożonego"><span aria-hidden="true">◈</span></button>
           <h3>Wsparcie przełożonego</h3>
           <p>Porządkuje obserwacje, proponuje pytania, pomaga uzasadnić ocenę i wypracować plan rozwoju zawodowego.</p>
         </article>
         <article class="feature-card">
-          <div class="icon">⌁</div>
+          <button type="button" class="icon icon-action" data-icon-detail="ar" aria-label="Zobacz koncepcję okularów AR"><span aria-hidden="true">⌁</span></button>
           <h3>Okulary AR — kierunek rozwoju</h3>
           <p>W przyszłości ALTIMA będzie mogła wskazywać kolejne działania bezpośrednio w polu widzenia, po wyrażeniu zgody na dostęp do obrazu.</p>
         </article>
         <article class="feature-card">
-          <div class="icon">✦</div>
+          <button type="button" class="icon icon-action" data-demo-target="report" aria-label="Przygotuj projekt oceny"><span aria-hidden="true">✦</span></button>
           <h3>Dokumentacja pod kontrolą</h3>
           <p>Docelowo: arkusze A/B/C, kryteria, obserwacje, terminy i projekt oceny do zatwierdzenia przez człowieka.</p>
         </article>
@@ -179,9 +179,9 @@
     <span class="section-kicker">ODPOWIEDZIALNE AI</span>
     <h2 id="trust-title">Dane pod kontrolą. Decyzja po stronie człowieka.</h2>
     <div class="trust-grid">
-      <article><span aria-hidden="true">♙</span><h3>Dostęp według uprawnień</h3><p>Docelowo pracownik, przełożony i kadry widzą wyłącznie dane związane ze swoją rolą.</p></article>
-      <article><span aria-hidden="true">▧</span><h3>RODO i bezpieczeństwo</h3><p>Projektowane mechanizmy ochrony danych, anonimizacji i zgodności z przepisami.</p></article>
-      <article><span aria-hidden="true">✓</span><h3>Człowiek zatwierdza ocenę</h3><p>ALTIMA przygotowuje podpowiedzi i projekt dokumentu. Ocenę sporządza i zatwierdza uprawniona osoba.</p></article>
+      <article><button type="button" class="trust-icon icon-action" data-icon-detail="access" aria-label="Dostęp według uprawnień"><span aria-hidden="true">♙</span></button><h3>Dostęp według uprawnień</h3><p>Docelowo pracownik, przełożony i kadry widzą wyłącznie dane związane ze swoją rolą.</p></article>
+      <article><button type="button" class="trust-icon icon-action" data-icon-detail="privacy" aria-label="RODO i bezpieczeństwo"><span aria-hidden="true">▧</span></button><h3>RODO i bezpieczeństwo</h3><p>Projektowane mechanizmy ochrony danych, anonimizacji i zgodności z przepisami.</p></article>
+      <article><button type="button" class="trust-icon icon-action" data-icon-detail="approval" aria-label="Jak człowiek zatwierdza ocenę"><span aria-hidden="true">✓</span></button><h3>Człowiek zatwierdza ocenę</h3><p>ALTIMA przygotowuje podpowiedzi i projekt dokumentu. Ocenę sporządza i zatwierdza uprawniona osoba.</p></article>
     </div>
     <p class="trust-note">Obecny prototyp nie jest podłączony do rzeczywistych rejestrów kadrowych. Przed wdrożeniem wymagane są konfiguracja, kontrola dostępu, testy bezpieczeństwa i weryfikacja zgodności prawnej.</p>
   </div>
@@ -246,9 +246,9 @@
           </div>
           <div class="assistant-stage">
             <img src="assets/altima-approved-stage.svg" alt="ALTIMA — asystentka na neonowej platformie w nowoczesnym cyfrowym studio" class="stage-girl stage-girl-approved" />
-            <div class="stage-tag tag-a">AI Colleague</div>
-            <div class="stage-tag tag-b">AI Mentor</div>
-            <div class="stage-tag tag-c">AI Manager</div>
+            <button type="button" class="icon-action stage-tag tag-a" data-mode="colleague">AI Colleague</button>
+            <button type="button" class="icon-action stage-tag tag-b" data-mode="mentor">AI Mentor</button>
+            <button type="button" class="icon-action stage-tag tag-c" data-mode="manager">AI Manager</button>
           </div>
           <div class="mode-switch">
             <button class="mode active" data-mode="colleague">Współpracownik AI</button>
@@ -358,6 +358,12 @@
       <span>Koncepcja i prototyp demonstracyjny · HackNation 2026</span>
     </div>
   </footer>
+
+  <dialog id="iconDetails" class="icon-details" aria-labelledby="iconDetailsTitle">
+    <h2 id="iconDetailsTitle"></h2>
+    <p id="iconDetailsText"></p>
+    <form method="dialog"><button class="btn btn-primary" autofocus>Zamknij</button></form>
+  </dialog>
 
   <script src="app.js"></script>
 </body>
