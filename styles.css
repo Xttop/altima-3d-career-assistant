@@ -318,10 +318,10 @@ body{background:#eef6ff}
 
 /* ALTIMA / HackNation 2026 — voice-first civil-service evaluation website. */
 html{scroll-behavior:smooth}
-#proces,#zespol{scroll-margin-top:92px}
-.altima-process-shell,.team-brief-shell{max-width:1390px;margin:0 auto}
-.altima-process h2,.team-brief h2{font-size:clamp(30px,3.8vw,57px);line-height:1.09;letter-spacing:-1.5px;color:#102c56;margin:15px 0 18px;font-weight:900}
-.altima-process-shell>p,.team-brief-shell p{font-size:17px;line-height:1.75;color:#496983;margin:0}
+#proces{scroll-margin-top:92px}
+.altima-process-shell{max-width:1390px;margin:0 auto}
+.altima-process h2{font-size:clamp(30px,3.8vw,57px);line-height:1.09;letter-spacing:-1.5px;color:#102c56;margin:15px 0 18px;font-weight:900}
+.altima-process-shell>p p{font-size:17px;line-height:1.75;color:#496983;margin:0}
 .altima-process{padding:85px clamp(16px,4vw,62px) 100px;background:#fff}
 .altima-process-shell>p{max-width:920px}
 .process-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;counter-reset:none;list-style:none;padding:0;margin:34px 0}
@@ -330,17 +330,8 @@ html{scroll-behavior:smooth}
 .process-steps li strong{font-size:21px;line-height:1.25;color:#15365c}
 .process-steps li small{font-size:14px;line-height:1.5;color:#52728a}
 .altima-process .process-disclaimer{font-size:13px;max-width:none;color:#6c8092;background:#f4f8fa;border-left:3px solid #e43d60;padding:15px 17px;border-radius:4px}
-.team-brief{padding:72px clamp(16px,4vw,62px);background:radial-gradient(circle at 80% 8%,#277bba45,transparent 43%),linear-gradient(115deg,#0a2348,#113a6b)}
-.team-brief-shell{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:50px}
-.team-brief .section-kicker{color:#80edff}
-.team-brief h2{color:#fff}
-.team-brief p{color:#c8e2f3}
-.team-members{display:grid;gap:15px}
-.team-members>div{padding:21px 22px;border-radius:15px;border:1px solid #7deeff61;background:#ffffff10}
-.team-members strong{display:block;color:#fff;font-size:21px}
-.team-members span{display:block;margin-top:6px;color:#a3e9ff;font-size:14px}
 @media(max-width:1100px){.process-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.deck-intro{align-items:start;flex-direction:column}}
-@media(max-width:700px){.altima-process{padding:55px 15px}.process-steps,.team-brief-shell{grid-template-columns:1fr}.altima-process h2,.team-brief h2{letter-spacing:-.5px}.team-brief{padding:55px 18px}.process-steps li{min-height:130px}}
+@media(max-width:700px){.altima-process{padding:55px 15px}.process-steps{grid-template-columns:1fr}.altima-process h2{letter-spacing:-.5px}.process-steps li{min-height:130px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 
