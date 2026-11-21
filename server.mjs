@@ -9,7 +9,7 @@ const roles = {
   mentor: 'Be a supportive career mentor who coaches skills and professional development.',
   manager: 'Be a constructive practice interviewer or manager. Give actionable feedback.',
 };
-const mime = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'text/javascript; charset=utf-8', svg: 'image/svg+xml' };
+const mime = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'text/javascript; charset=utf-8', svg: 'image/svg+xml', webp: 'image/webp' };
 
 function json(res, status, data) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
@@ -96,7 +96,7 @@ export function createAltimaServer(requestModel = fetch) {
       return;
     }
     const file = path === '/' ? 'index.html' : path.slice(1);
-    const publicFile = /^(index\.html|app\.js|styles\.css|[a-z0-9-]+\.svg|assets\/[a-z0-9-]+\.svg)$/i;
+    const publicFile = /^(index\.html|app\.js|styles\.css|[a-z0-9-]+\.svg|assets\/[a-z0-9-]+\.(?:svg|webp))$/i;
     if (!['GET', 'HEAD'].includes(req.method) || !publicFile.test(file)) {
       res.writeHead(404).end();
       return;
