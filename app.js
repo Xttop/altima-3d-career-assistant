@@ -126,6 +126,61 @@ function updateCriteriaLimit(){
 }
 criteriaBoxes.forEach(box => box.addEventListener('change',updateCriteriaLimit));
 updateCriteriaLimit();
+
+/* Accessible navigation from the four editorial process icons into the real
+   capabilities of the public demonstration. No fake server actions. */
+const featureButtons = Array.from(document.querySelectorAll('.ape-feature-button'));
+const featureStatus = document.getElementById('apeFeatureStatus');
+const demoForm = document.querySelector('#demo .evaluation-box');
+const scenarioTargets = {
+  forms: {
+    stage:'Rozmowa rozpoczynająca',
+    field:'sheetType',
+    status:'Otworzono wybór arkusza A/B/C. Możesz też zaznaczyć maksymalnie trzy kryteria.',
+    response:'Zaczynamy od wyboru arkusza A, B lub C. W tym prototypie możesz też wybrać maksymalnie trzy dodatkowe kryteria. To demonstracja, nie kompletne formularze urzędowe.'
+  },
+  notes: {
+    stage:'Obserwacje i notatki',
+    field:'observations',
+    status:'Otworzono etap obserwacji. Tutaj można wpisać notatki o pracy.',
+    response:'Teraz możesz dodać konkretne obserwacje dotyczące pracy. Przydadzą się podczas rozmowy oceniającej. Wersja demonstracyjna nie przechowuje notatek w bazie danych.'
+  },
+  interview: {
+    stage:'Rozmowa rozpoczynająca',
+    field:'evaluationStage',
+    status:'Otworzono etap rozmów. Wybierz rozmowę rozpoczynającą lub oceniającą.',
+    response:'Przygotujmy rozmowę. Możesz wybrać rozmowę rozpoczynającą lub oceniającą i omówić cele, osiągnięcia oraz oczekiwania. Wybór etapu znajdziesz w formularzu.'
+  },
+  report: {
+    stage:'Podsumowanie i rozwój',
+    field:'draftOutput',
+    status:'Przygotowano przykładowe podsumowanie. Eksport TXT działa; automatyczne przypomnienia o terminach są planowane.',
+    response:'Przygotowałam demonstracyjne podsumowanie na podstawie przykładowych danych. Możesz je przeczytać i pobrać jako TXT. Przypomnienia o terminach oraz oficjalne arkusze będą wymagać dalszej implementacji.'
+  }
+};
+featureButtons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const action=scenarioTargets[btn.dataset.demoTarget];
+    if(!action || !demoForm) return;
+    const stageSelect=document.getElementById('evaluationStage');
+    if(stageSelect){
+      stageSelect.value=action.stage;
+      stageSelect.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    featureButtons.forEach(item=>item.classList.toggle('is-active',item===btn));
+    if(featureStatus) featureStatus.textContent=action.status;
+    if(btn.dataset.demoTarget==='report') buildReport();
+    addMessage(action.response,'ai');
+    const field=document.getElementById(action.field);
+    const target=field || demoForm;
+    const reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});
+    if(field){
+      if(field.id==='draftOutput' && !field.hasAttribute('tabindex')) field.setAttribute('tabindex','-1');
+      field.focus({preventScroll:true});
+    }
+  });
+});
 function buildReport(){
   const employee = document.getElementById('employeeName').value.trim() || '(nie podano)';
   const period = document.getElementById('evaluationPeriod').value.trim() || '(nie podano)';
