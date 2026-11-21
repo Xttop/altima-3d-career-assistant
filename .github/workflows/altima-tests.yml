@@ -1,0 +1,27 @@
+name: ALTIMA voice assistant checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feat/altima-career-voice
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check browser JavaScript syntax
+        run: node --check app.js
+      - name: Check server JavaScript syntax
+        run: node --check server.mjs
+      - name: Run API tests (no real API key needed)
+        run: node --test
