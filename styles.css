@@ -393,3 +393,17 @@ html{scroll-behavior:smooth}
 @media(max-width:1150px){.ape-layout{grid-template-columns:50% 50%;min-height:520px}.ape-copy{padding:28px 20px 63px}.ape-copy h3{font-size:clamp(26px,3.2vw,39px)}.ape-portrait{min-width:195%;transform:translateX(-48%)}.ape-features strong{font-size:16px}.ape-features small{font-size:13px}}
 @media(max-width:760px){.ape-layout{grid-template-columns:1fr;min-height:unset}.ape-copy{padding:30px 19px 35px}.ape-copy h3{font-size:35px;letter-spacing:-1px}.ape-picture{height:320px;min-height:320px;grid-row:2}.ape-portrait{min-width:140%;height:100%;left:0;transform:translateX(-23%)}.ape-bottom-wave{bottom:-55px}.ape-assistant-note{right:18px;bottom:72px}.ape-features{grid-template-columns:1fr 1fr;gap:14px 11px}.ape-feature-icon{flex-basis:45px;width:45px;height:45px;font-size:22px}.ape-features>div{gap:9px;align-items:center}.ape-features strong{font-size:13px}.ape-features small{font-size:11px}}
 @media(max-width:470px){.ape-copy h3{font-size:30px}.ape-features{grid-template-columns:1fr}.ape-features strong{font-size:15px}.ape-features small{font-size:12px}.ape-picture{height:280px;min-height:280px}.ape-portrait{min-width:160%;transform:translateX(-31%)}}
+
+
+/* Functional image-section actions: clickable, keyboard accessible and clearly interactive. */
+.ape-feature-button{display:flex;align-items:center;gap:17px;width:100%;max-width:480px;padding:7px 11px 7px 0;text-align:left;background:transparent;border:1px solid transparent;border-radius:13px;color:inherit;font:inherit;cursor:pointer;transition:background-color .18s ease,border-color .18s ease,transform .18s ease;min-width:0}
+.ape-feature-button:hover,.ape-feature-button.is-active{background:#e5f5ffdb;border-color:#9bdfed;transform:translateX(3px)}
+.ape-feature-button:focus-visible{outline:3px solid #eb3554;outline-offset:3px;background:#e7f9ff}
+.ape-feature-button .ape-feature-icon{flex-shrink:0}
+.ape-feature-button:hover .ape-feature-icon,.ape-feature-button.is-active .ape-feature-icon{background:linear-gradient(135deg,#06569b,#25b7d1);box-shadow:0 0 18px #42d7ef7a}
+.ape-feature-label{min-width:0;flex:1;display:block}
+.ape-feature-arrow{display:grid;place-items:center;flex:0 0 27px;width:27px;height:27px;border-radius:50%;background:#d6eefa;color:#1060a1;font-size:17px;font-weight:900;opacity:.65;transition:transform .18s ease,opacity .18s ease}
+.ape-feature-button:hover .ape-feature-arrow,.ape-feature-button:focus-visible .ape-feature-arrow,.ape-feature-button.is-active .ape-feature-arrow{opacity:1;transform:translate(2px,-2px)}
+.ape-feature-status{max-width:505px;margin:14px 0 0;padding:9px 12px;border-left:3px solid #e73551;border-radius:4px;background:#effaff;color:#315b7b;font-size:12px;line-height:1.6}
+@media(max-width:760px){.ape-feature-button{gap:9px;padding:6px}.ape-feature-arrow{flex-basis:21px;width:21px;height:21px}.ape-feature-status{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.ape-feature-button,.ape-feature-arrow{transition:none}.ape-feature-button:hover,.ape-feature-button.is-active{transform:none}}
