@@ -18,7 +18,7 @@ HTTPS for microphone access outside localhost. Keep credentials outside
 the document root and use access controls and request quotas before
 exposing the keyed backend publicly.
 
-Choose Polish, Russian, or English, then click the microphone to ask one
+Choose Polish, Ukrainian, or English, then click the microphone to ask one
 question. Use the microphone or **Przerwij odpowiedź** to interrupt, and
 use the text field if speech recognition is unavailable. Voice quality
 and microphone support depend on the browser and installed voices.
