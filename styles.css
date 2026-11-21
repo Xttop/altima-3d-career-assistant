@@ -536,3 +536,19 @@ html{scroll-behavior:smooth}
   .btn, .role-art img { transition: none; }
   .btn:hover, .role-visual:hover .role-art.role-photo img { transform: none; }
 }
+
+.role-visual {
+  display: block;
+}
+
+.role-visual .role-overline { position: relative; padding-right: 34px; }
+
+.role-card-arrow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: var(--accent-ink);
+}
+
+.role-visual:hover, .role-visual:focus-visible { border-color: var(--blue); }
+.role-visual:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }

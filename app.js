@@ -108,9 +108,17 @@ modeButtons.forEach(button => {
   });
 });
 
-document.querySelectorAll('[data-role-shortcut]').forEach(button => {
-  button.addEventListener('click', () => {
-    selectMode(button.dataset.roleShortcut);
+let lastRolePrompt = '';
+document.querySelectorAll('[data-role-shortcut]').forEach(shortcut => {
+  shortcut.addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    selectMode(shortcut.dataset.roleShortcut);
+    const { rolePrompt } = shortcut.dataset;
+    if (rolePrompt && (!chatInput.value.trim() || chatInput.value === lastRolePrompt)) {
+      chatInput.value = rolePrompt;
+      lastRolePrompt = rolePrompt;
+    }
     focusDemoField(chatInput);
   });
 });
