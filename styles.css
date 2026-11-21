@@ -360,3 +360,30 @@ html{scroll-behavior:smooth}
 .criteria-fieldset small{grid-column:1/-1;color:#2684a5;font-weight:800}
 @media(max-width:1150px){.altima-insight-inner,.altima-future-inner{grid-template-columns:1fr;gap:25px}.insight-media,.future-illustration{max-width:920px}.automation-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:750px){.altima-insight,.altima-automation,.altima-future,.altima-trust{padding:65px 16px}.automation-grid,.trust-grid{grid-template-columns:1fr}.criteria-fieldset{grid-template-columns:1fr}.insight-text h2,.altima-automation h2,.altima-future h2,.altima-trust h2{letter-spacing:-.5px}.process-illustration{margin:25px 0}.process-illustration figcaption{font-size:11px}}
+
+
+/* Redesigned on-site ALTIMA evaluation illustration — not a Canva slide. */
+.workflow-art{margin:34px 0 28px;border-radius:24px;overflow:hidden;background:#071b36;border:1px solid #70ddfa6e;box-shadow:0 22px 56px #143d6d39}
+.workflow-art__scene{min-height:490px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:26px;padding:92px clamp(20px,4vw,52px) 44px;isolation:isolate}
+.workflow-art__photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 44%;z-index:-2;filter:saturate(1.2) brightness(.8)}
+.workflow-art__scrim{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(4,22,52,.92) 0%,rgba(5,29,66,.55) 34%,rgba(5,27,62,.35) 53%,rgba(5,24,55,.88) 100%),linear-gradient(0deg,rgba(3,14,37,.59),transparent 43%)}
+.workflow-art__topline{position:absolute;top:29px;left:clamp(20px,4vw,52px);right:25px;color:#dcfaff;font-size:12px;letter-spacing:1.8px;font-weight:900;display:flex;align-items:center;gap:14px;text-shadow:0 1px 14px #062047}
+.workflow-art__signal{width:10px;height:10px;flex:0 0 10px;border-radius:50%;background:#68fbe1;box-shadow:0 0 17px #50ebfa}
+.workflow-art__sep{color:#6beaff;font-weight:400}
+.workflow-art__panel{flex:0 1 300px;max-width:345px;min-width:0;padding:23px 24px;border-radius:17px;background:#071c3de8;backdrop-filter:blur(12px);border:1px solid #8ceaff9e;box-shadow:0 15px 48px #010d29a3}
+.workflow-art__eyebrow{display:block;color:#7befff;letter-spacing:1.8px;font-weight:900;font-size:11px}
+.workflow-art__panel h3{color:white;font-size:23px;line-height:1.2;margin:12px 0 17px;letter-spacing:-.4px}
+.workflow-art__letters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.workflow-art__letters span{display:grid;place-items:center;min-height:72px;color:white;font-size:31px;font-weight:950;border-radius:11px;border:1px solid #7ceeffba;background:linear-gradient(135deg,#117ab9c9,#084276c9);box-shadow:inset 0 0 17px #3ecffd32}
+.workflow-art__panel-divider{height:1px;margin:20px 0;border:0;background:linear-gradient(90deg,#8aeefc66,transparent)}
+.workflow-art__panel p{color:#cde9f7;font-size:16px;line-height:1.6;margin:12px 0 0}
+.workflow-art__panel p strong{color:#fff}
+.workflow-art__timeline{position:relative;display:grid;gap:15px;padding:3px 0 2px 23px}
+.workflow-art__timeline:before{position:absolute;content:"";top:10px;bottom:12px;left:6px;border-left:2px solid #57c9f6}
+.workflow-art__timeline>span{position:relative;display:block;color:#dcf7ff;font-size:15px;line-height:1.4}
+.workflow-art__timeline>span:before{position:absolute;content:"";left:-23px;top:5px;width:10px;height:10px;border:2px solid #88f4ff;background:#0a528c;border-radius:50%;box-shadow:0 0 11px #70e9ff}
+.workflow-art__link{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:25px;padding:11px 15px;border-radius:10px;color:#03254a!important;background:#81eeff;font-size:13px;font-weight:900;text-decoration:none}
+.workflow-art__link:hover{background:#c7faff}
+.workflow-art figcaption{padding:12px 24px;background:#0d2d54;color:#cde8f5;font-size:12px;line-height:1.65}
+@media(max-width:940px){.workflow-art__scene{align-items:stretch;min-height:540px}.workflow-art__panel{flex:0 1 48%;max-width:none}.workflow-art__photo{object-position:center}}
+@media(max-width:680px){.workflow-art__scene{padding:92px 17px 22px;display:grid;gap:18px;min-height:0}.workflow-art__panel{padding:19px;max-width:none;width:100%;box-sizing:border-box}.workflow-art__topline{left:17px;top:23px;letter-spacing:1px;font-size:10px;line-height:1.6}.workflow-art__photo{object-position:45% center}.workflow-art__scrim{background:#041a3dd1}.workflow-art__panel h3{font-size:21px}.workflow-art figcaption{padding:12px 17px}}
