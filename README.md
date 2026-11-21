@@ -45,10 +45,11 @@ exposing the keyed backend publicly.
 
 Choose Polish, Ukrainian, or English, then click the microphone to ask one
 question. Use the microphone or **Przerwij odpowiedź** to interrupt, and
-use the text field if speech recognition is unavailable. Voice quality
-and microphone support depend on the browser and installed voices.
-Recognition may use the browser vendor’s speech service. The server sends
-the transcript and up to six completed turns to OpenAI with
+use the text field if speech recognition is unavailable. Voice quality and microphone support depend on the browser and installed voices.
+On a configured server, press the microphone again to submit up to 30 seconds
+of audio for OpenAI transcription. The browser's recognition service is used
+when server recording is unavailable and the browser supports recognition.
+The server sends the transcript and up to six completed turns to OpenAI with
 `store: false`. The page keeps the visible conversation in memory until
 reload. Use sample data and omit personal or employee records.
 

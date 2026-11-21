@@ -8,8 +8,15 @@ test('chat validates turns, forwards context and reports provider failures', asy
   let status = 200;
   let upstreamBody;
   const server = createAltimaServer(async (url, options) => {
-    assert.equal(url, 'https://api.openai.com/v1/responses');
     assert.equal(options.headers.Authorization, 'Bearer test-key');
+    if (url.endsWith('/audio/transcriptions')) {
+      assert.equal(options.body.get('model'), 'gpt-4o-mini-transcribe');
+      assert.equal(options.body.get('language'), 'pl');
+      assert.equal(options.body.get('file').name, 'question.webm');
+      assert.equal(await options.body.get('file').text(), 'test audio');
+      return Response.json({ text: '  Pytanie użytkownika  ' }, { status });
+    }
+    assert.equal(url, 'https://api.openai.com/v1/responses');
     upstreamBody = JSON.parse(options.body);
     return Response.json({
       output: [{ type: 'message', content: [{ type: 'output_text', text: 'Расскажите о своём опыте.' }] }],
@@ -33,11 +40,25 @@ test('chat validates turns, forwards context and reports provider failures', asy
     body: JSON.stringify({ language: 'uk-UA', mode: 'mentor', messages, ...overrides }),
   });
 
+  const record = (type = 'audio/webm', language = 'pl-PL', body = 'test audio') =>
+    fetch(url + '/api/transcribe', {
+      method: 'POST',
+      headers: { 'Content-Type': type, 'X-Altima-Language': language },
+      body,
+    });
+
   assert.equal((await fetch(url)).status, 200);
   assert.equal((await fetch(url + '/server.mjs')).status, 404);
   assert.deepEqual(await (await fetch(url + '/api/status')).json(), { ai: false });
   assert.equal((await send()).status, 503);
+  assert.equal((await record()).status, 503);
   process.env.OPENAI_API_KEY = 'test-key';
+  assert.equal((await record('text/plain')).status, 400);
+  assert.equal((await record('audio/webm', 'unknown')).status, 400);
+  assert.equal((await record('audio/webm', 'pl-PL', '')).status, 400);
+  const transcription = await record();
+  assert.equal(transcription.status, 200);
+  assert.deepEqual(await transcription.json(), { text: 'Pytanie użytkownika' });
   assert.equal((await send({ language: 'unknown' })).status, 400);
   assert.equal((await send({ messages: [{ role: 'system', content: 'bad role' }] })).status, 400);
   const response = await send();
@@ -61,6 +82,7 @@ test('chat validates turns, forwards context and reports provider failures', asy
   assert.deepEqual(upstreamBody.input, messages);
   status = 429;
   assert.equal((await send()).status, 429);
+  assert.equal((await record()).status, 429);
   status = 500;
   assert.equal((await send()).status, 502);
 });

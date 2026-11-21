@@ -358,6 +358,10 @@ const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechReco
 const femaleVoices = /Paulina|Zofia|Agnieszka|Kasia|Maja|Oksana|Olena|Kateryna|Natalia|Jenny|Aria|Samantha|Serena|female|Google polski/i;
 let voiceOn = false;
 let recognition = null;
+let audioCapture;
+const audioType = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus']
+  .find(type => window.MediaRecorder?.isTypeSupported(type));
+const canRecordAudio = Boolean(audioType && navigator.mediaDevices?.getUserMedia);
 let utterance = null;
 let request = null;
 let chatMode = 'pending';
@@ -382,7 +386,7 @@ const service = detectService().catch(() => 'unavailable').then(mode => {
 });
 
 function updateInterrupt() {
-  interruptBtn.disabled = !request && !utterance;
+  interruptBtn.disabled = !request && !utterance && !audioCapture?.transcribing;
   stage.classList.toggle('thinking', Boolean(request) && !utterance);
 }
 
@@ -512,6 +516,7 @@ voiceBtn.addEventListener('click', () => setVoiceEnabled(!voiceOn));
 synth?.addEventListener('voiceschanged', loadVoices);
 loadVoices();
 interruptBtn.addEventListener('click', () => {
+  cancelRecognition();
   interruptReply();
   setSpeechStatus('Odpowiedź przerwana. Możesz zadać kolejne pytanie.');
 });
@@ -523,6 +528,12 @@ languageSelect.addEventListener('change', () => {
 });
 
 function cancelRecognition() {
+  if (audioCapture) {
+    const capture = audioCapture;
+    capture.controller.abort();
+    if (capture.recorder?.state === 'recording') capture.recorder.stop();
+    releaseAudio(capture);
+  }
   if (!recognition) return;
   const capture = recognition;
   capture.onstart = capture.onresult = capture.onerror = null;
@@ -538,17 +549,128 @@ function resetMicrophone() {
   micBtn.textContent = '🎙️ Rozmawiaj z ALTIMA';
 }
 
-if (!SpeechRecognitionAPI) {
+if (!SpeechRecognitionAPI && !canRecordAudio) {
   micBtn.disabled = true;
   setSpeechStatus('Rozpoznawanie mowy jest niedostępne w tej przeglądarce. Możesz pisać.');
 }
-micBtn.addEventListener('click', () => {
+function markListening() {
+  micBtn.setAttribute('aria-pressed', 'true');
+  micBtn.classList.add('listening');
+  micBtn.textContent = '⏹️ Zakończ pytanie';
+}
+
+function releaseAudio(capture) {
+  clearTimeout(capture.timer);
+  capture.stream?.getTracks().forEach(track => track.stop());
+  if (audioCapture !== capture) return;
+  audioCapture = undefined;
+  micBtn.disabled = false;
+  resetMicrophone();
+  updateInterrupt();
+}
+
+async function submitAudio(capture, chunks) {
+  capture.stream.getTracks().forEach(track => track.stop());
+  clearTimeout(capture.timer);
+  if (capture.controller.signal.aborted) return;
+  capture.transcribing = true;
+  micBtn.disabled = false;
+  resetMicrophone();
+  updateInterrupt();
+  setSpeechStatus('Rozpoznaję nagranie…');
+  try {
+    const audio = new Blob(chunks, { type: capture.recorder.mimeType || audioType });
+    if (!audio.size || audio.size > 2_000_000) throw new Error('invalid_audio');
+    const response = await fetch('./api/transcribe', {
+      method: 'POST',
+      headers: { 'X-Altima-Language': capture.language },
+      body: audio,
+      signal: capture.controller.signal,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error);
+    if (capture.controller.signal.aborted) return;
+    releaseAudio(capture);
+    if (data.text) sendMessage(data.text);
+    else setSpeechStatus('Nie wykryto mowy. Spróbuj ponownie.');
+  } catch (error) {
+    if (capture.controller.signal.aborted) return;
+    const messages = {
+      invalid_audio: 'Nie udało się odczytać nagrania. Nagraj krótsze pytanie.',
+      rate_limited: 'Usługa mowy osiągnęła limit. Spróbuj później.',
+      not_configured: 'Serwer nie ma skonfigurowanego klucza AI.',
+    };
+    setSpeechStatus(messages[error.message] || 'Usługa rozpoznawania mowy jest niedostępna.');
+  } finally {
+    releaseAudio(capture);
+  }
+}
+
+async function recordAudio() {
+  const capture = { controller: new AbortController(), language: languageSelect.value };
+  audioCapture = capture;
+  micBtn.disabled = true;
+  setSpeechStatus('Uruchamiam mikrofon…');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    capture.stream = stream;
+    if (capture.controller.signal.aborted) {
+      releaseAudio(capture);
+      return;
+    }
+    const recorder = new MediaRecorder(stream, { mimeType: audioType, audioBitsPerSecond: 48_000 });
+    capture.recorder = recorder;
+    const chunks = [];
+    recorder.addEventListener('dataavailable', event => {
+      if (event.data.size) chunks.push(event.data);
+    });
+    recorder.addEventListener('stop', () => submitAudio(capture, chunks), { once: true });
+    recorder.addEventListener('error', () => {
+      capture.controller.abort();
+      releaseAudio(capture);
+      setSpeechStatus('Nie udało się nagrać pytania.');
+    }, { once: true });
+    recorder.start();
+    capture.timer = setTimeout(() => {
+      if (recorder.state === 'recording') recorder.stop();
+    }, 30_000);
+    micBtn.disabled = false;
+    markListening();
+    stage.classList.add('listening');
+    setSpeechStatus('Słucham… Naciśnij „Zakończ pytanie”, gdy skończysz.');
+  } catch (error) {
+    if (capture.controller.signal.aborted) return;
+    releaseAudio(capture);
+    setSpeechStatus(error.name === 'NotAllowedError'
+      ? 'Zezwól na dostęp do mikrofonu w ustawieniach przeglądarki.'
+      : 'Nie udało się uruchomić mikrofonu. Możesz pisać.');
+  }
+}
+
+micBtn.addEventListener('click', async () => {
+  if (audioCapture?.recorder?.state === 'recording') {
+    micBtn.disabled = true;
+    audioCapture.recorder.stop();
+    return;
+  }
   if (recognition) {
     recognition.stop();
     return;
   }
+  cancelRecognition();
   interruptReply();
   setVoiceEnabled(true);
+  micBtn.disabled = true;
+  const available = await service;
+  micBtn.disabled = false;
+  if (canRecordAudio && available === 'live') {
+    recordAudio();
+    return;
+  }
+  if (!SpeechRecognitionAPI) {
+    setSpeechStatus('Nagrywanie pytań wymaga połączonej usługi AI.');
+    return;
+  }
   const capture = new SpeechRecognitionAPI();
   recognition = capture;
   capture.lang = languageSelect.value;
@@ -581,9 +703,7 @@ micBtn.addEventListener('click', () => {
   };
   try {
     capture.start();
-    micBtn.setAttribute('aria-pressed', 'true');
-    micBtn.classList.add('listening');
-    micBtn.textContent = '⏹️ Zakończ pytanie';
+    markListening();
     setSpeechStatus('Uruchamiam mikrofon…');
   } catch {
     resetMicrophone();
@@ -726,3 +846,5 @@ cameraSend.addEventListener('click', () => {
 });
 
 window.addEventListener('pagehide', stopCamera);
+
+window.addEventListener('pagehide', cancelRecognition);

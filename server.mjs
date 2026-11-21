@@ -97,11 +97,77 @@ If an image is attached, describe visible details relevant to the question. Do n
   }
 }
 
+const audioExtensions = new Map([
+  ['audio/webm', 'webm'],
+  ['audio/mp4', 'mp4'],
+  ['audio/ogg', 'ogg'],
+]);
+const maxAudioBytes = 2_000_000;
+
+async function transcribe(req, res, requestModel) {
+  const type = req.headers['content-type']?.split(';')[0];
+  const extension = audioExtensions.get(type);
+  const language = req.headers['x-altima-language'];
+  if (!extension || !Object.hasOwn(languages, language) ||
+      Number(req.headers['content-length']) > maxAudioBytes) {
+    json(res, 400, { error: 'invalid_audio' });
+    return;
+  }
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) {
+    json(res, 503, { error: 'not_configured' });
+    return;
+  }
+
+  const controller = new AbortController();
+  res.once('close', () => controller.abort());
+  try {
+    const chunks = [];
+    let size = 0;
+    for await (const chunk of req) {
+      size += chunk.length;
+      if (size > maxAudioBytes) {
+        json(res, 413, { error: 'invalid_audio' });
+        return;
+      }
+      chunks.push(chunk);
+    }
+    if (!size) {
+      json(res, 400, { error: 'invalid_audio' });
+      return;
+    }
+    const form = new FormData();
+    form.set('model', 'gpt-4o-mini-transcribe');
+    form.set('language', language.split('-')[0]);
+    form.set('file', new Blob(chunks, { type }), 'question.' + extension);
+    const upstream = await requestModel('https://api.openai.com/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + key },
+      body: form,
+      signal: AbortSignal.any([controller.signal, AbortSignal.timeout(25_000)]),
+    });
+    if (upstream.status === 429) {
+      json(res, 429, { error: 'rate_limited' });
+      return;
+    }
+    if (!upstream.ok) throw new Error('provider');
+    const data = await upstream.json();
+    const text = typeof data.text === 'string' ? data.text.trim().slice(0, 2000) : '';
+    json(res, 200, { text });
+  } catch {
+    if (!res.destroyed) json(res, 502, { error: 'transcription_unavailable' });
+  }
+}
+
 export function createAltimaServer(requestModel = fetch) {
   return createServer(async (req, res) => {
     const path = req.url.split('?')[0];
     if (path === '/api/status' && req.method === 'GET') {
       json(res, 200, { ai: Boolean(process.env.OPENAI_API_KEY) });
+      return;
+    }
+    if (path === '/api/transcribe' && req.method === 'POST') {
+      await transcribe(req, res, requestModel);
       return;
     }
     if (path === '/api/chat' && req.method === 'POST') {
