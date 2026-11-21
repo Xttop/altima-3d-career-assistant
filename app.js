@@ -72,11 +72,22 @@ function addMessage(text, role='ai'){
 }
 
 function replyTo(prompt){
-  const text = prompt.toLowerCase();
-  if (text.includes('ocen')) return 'Przejdź do sekcji „Projekt podsumowania oceny”. Uzupełnij osiągnięcia i kliknij „Utwórz projekt”, a pomogę uporządkować treść.';
-  if (text.includes('rozmow') || text.includes('przełoż')) return 'W rozmowie z przełożonym dobrze podkreślić trzy konkretne osiągnięcia, jeden obszar do rozwoju i propozycję następnych kroków.';
-  if (text.includes('rozw') || text.includes('kompet')) return 'Rekomenduję rozwój komunikacji, planowania pracy i sprawnej obsługi dokumentów. Mogę pomóc przekształcić to w plan rozwoju.';
-  if (text.includes('meta') || text.includes('okular')) return 'W wariancie z okularami Meta asystent może pokazywać, gdzie kliknąć, co wpisać i jaki dokument otworzyć w danym momencie.';
+  // Local, scripted demonstration. No external model or real HR databases.
+  const text = String(prompt).toLowerCase();
+  if (/arkusz|formularz|kryteri|a b c|a\/b\/c/.test(text))
+    return 'W ocenie okresowej należy dobrać właściwy arkusz A, B lub C do rodzaju stanowiska. Dodatkowych kryteriów może być maksymalnie trzy. W demonstracji niżej wybierz arkusz i zaznacz kryteria. Nie zastępuje to urzędowych wzorów.';
+  if (/wypalen|przeciąż|dobrostan|motywacj|hr partner/.test(text))
+    return 'Wirtualny partner HR może pomóc przygotować spokojną rozmowę o obciążeniu i potrzebach pracownika, zaproponować mentoring, zmianę priorytetów lub szkolenie. Nie stawiam diagnozy i nie podejmuję decyzji kadrowych.';
+  if (/termin|nieobecno|zmian.*przełoż|obserwac/.test(text))
+    return 'W docelowym systemie ALTIMA ma przypominać o terminach, porządkować notatki i wspierać sytuacje takie jak zmiana przełożonego, zadań lub długotrwała nieobecność. Obecna witryna pokazuje tylko koncepcję tych funkcji.';
+  if (/rozmow|feedback|oceniając/.test(text))
+    return 'Przygotuj cel rozmowy, przykłady konkretnych osiągnięć oraz pytania otwarte. Najpierw omów oczekiwania, potem obserwacje i rozwój. Użytkownik i przełożony zatwierdzają ostateczną treść oceny.';
+  if (/ocen|podsumowan/.test(text))
+    return 'Przejdź do demonstracyjnego formularza poniżej. Wybierz arkusz A/B/C, maksymalnie trzy dodatkowe kryteria, wpisz obserwacje i wygeneruj projekt podsumowania. Ostateczną ocenę sporządza człowiek.';
+  if (/rozw|kompet|szkoleni/.test(text))
+    return 'Plan rozwoju można oprzeć na mocnych stronach, obszarach wymagających wsparcia oraz konkretnych działaniach, takich jak szkolenia i mentoring. Pomogę uporządkować propozycje.';
+  if (/meta|okular|rozszerzon|ar\b|głos/.test(text))
+    return 'ALTIMA ma w przyszłości pomagać głosowo i przez okulary AR, pokazując wskazówki bez konieczności szukania w menu. Obecny prototyp nie ma jeszcze dostępu do obrazu z okularów.';
   return modeReplies[currentMode];
 }
 
@@ -105,27 +116,58 @@ chatForm.addEventListener('submit', (e) => {
   setTimeout(() => addMessage(replyTo(value), 'ai'), 250);
 });
 
+const criteriaBoxes = Array.from(document.querySelectorAll('input[name="criterion"]'));
+const criteriaStatus = document.getElementById('criteriaStatus');
+function updateCriteriaLimit(){
+  const selected = criteriaBoxes.filter(box => box.checked);
+  // UX guidance to match the maximum of three additional criteria in the brief.
+  criteriaBoxes.forEach(box => { box.disabled = !box.checked && selected.length >= 3; });
+  if (criteriaStatus) criteriaStatus.textContent = 'Wybrano ' + selected.length + ' z maksymalnie 3 kryteriów.';
+}
+criteriaBoxes.forEach(box => box.addEventListener('change',updateCriteriaLimit));
+updateCriteriaLimit();
 function buildReport(){
-  const employee = document.getElementById('employeeName').value;
-  const period = document.getElementById('evaluationPeriod').value;
+  const employee = document.getElementById('employeeName').value.trim() || '(nie podano)';
+  const period = document.getElementById('evaluationPeriod').value.trim() || '(nie podano)';
   const goals = document.getElementById('goalSelect').value;
   const teamwork = document.getElementById('teamSelect').value;
-  const achievements = document.getElementById('achievements').value;
+  const achievements = document.getElementById('achievements').value.trim() || '(brak wpisu)';
+  const sheet = document.getElementById('sheetType')?.value || 'B';
+  const stage = document.getElementById('evaluationStage')?.value || 'Rozmowa oceniająca';
+  const observations = document.getElementById('observations')?.value.trim() || '(brak wpisu)';
+  const criteria = criteriaBoxes.filter(box => box.checked).map(box => box.value);
+  const interviewTips = stage === 'Rozmowa rozpoczynająca'
+    ? 'Omów oczekiwania, kryteria i sposób dokumentowania efektów.'
+    : stage === 'Rozmowa oceniająca'
+      ? 'Zadaj pytania o osiągnięcia, wyzwania i potrzeby rozwojowe.'
+      : stage === 'Obserwacje i notatki'
+        ? 'Zapisz konkretne zdarzenia i rezultaty, bez nieuzasadnionych ocen.'
+        : 'Ustal mocne strony, dalsze cele i działania rozwojowe.';
   reportText = [
-    'ALTIMA AI VISION — PROJEKT PODSUMOWANIA',
+    'ALTIMA AI VISION — SYMULACJA PODSUMOWANIA',
+    'Materiał edukacyjny • dane przykładowe • nie jest urzędowym arkuszem A/B/C',
     '',
-    `Pracownik: ${employee}`,
-    `Okres oceny: ${period}`,
-    `Realizacja celów: ${goals}`,
-    `Współpraca: ${teamwork}`,
+    'Arkusz (symulacja): ' + sheet,
+    'Etap procesu: ' + stage,
+    'Pracownik: ' + employee,
+    'Okres oceny: ' + period,
+    'Kryteria dodatkowe: ' + (criteria.join(', ') || 'nie wybrano'),
+    'Realizacja celów: ' + goals,
+    'Współpraca: ' + teamwork,
+    '',
+    'Obserwacje przełożonego:',
+    observations,
     '',
     'Osiągnięcia:',
     achievements,
     '',
-    'Rekomendacja demonstracyjna:',
-    'Warto utrzymać mocne strony pracownika, wskazać dalsze cele rozwojowe i omówić konkretne mierzalne rezultaty.',
+    'Wskazówka do rozmowy:',
+    interviewTips,
     '',
-    'Uwaga: ostatecznej oceny dokonuje człowiek.'
+    'Propozycja działań rozwojowych:',
+    'Omówić konkretne rezultaty, mocne strony i obszary rozwoju. Ustalić szkolenia, mentoring i datę przeglądu postępów.',
+    '',
+    'Uwaga: to demonstracja działania interfejsu. Oficjalne formularze, uprawnienia i zgodność z przepisami wymagają dalszej implementacji. Ostateczną ocenę przygotowuje i zatwierdza człowiek.'
   ].join('\n');
   draftOutput.textContent = reportText;
 }
