@@ -123,3 +123,15 @@ speech APIs and microphone permission. It can also run on a phone paired
 with glasses that function as a Bluetooth headset. Native glasses apps,
 heads-up overlays, and device-specific microphone routing require testing
 with the selected hardware and its SDK.
+
+### Meta Quest 3
+
+In Meta Quest Browser, open the HTTPS test site, go to **Demo**, and select
+**Uruchom AR na Quest 3**. This starts a WebXR mixed-reality session with a
+panel anchored in front of the initial viewing position. Aim a controller
+and pull its trigger to navigate the evaluation stages or exit. For the
+full appraisal form and voice chat, return to the regular browser view.
+
+The AR button appears on browsers that report support for `immersive-ar`.
+The app displays instructional cards and does not access camera frames.
+This is a WebXR experience for Quest Browser. It requires no APK.

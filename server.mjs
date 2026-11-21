@@ -96,7 +96,7 @@ export function createAltimaServer(requestModel = fetch) {
       return;
     }
     const file = path === '/' ? 'index.html' : path.slice(1);
-    const publicFile = /^(index\.html|app\.js|service-worker\.js|manifest\.webmanifest|styles\.css|[a-z0-9-]+\.svg|assets\/[a-z0-9-]+\.(?:svg|webp)|assets\/app-icon-(?:192|512)\.png|assets\/canva\/slide-\d{2}\.png)$/i;
+    const publicFile = /^(index\.html|app\.js|quest-ar\.js|service-worker\.js|manifest\.webmanifest|styles\.css|[a-z0-9-]+\.svg|assets\/[a-z0-9-]+\.(?:svg|webp)|assets\/app-icon-(?:192|512)\.png|assets\/canva\/slide-\d{2}\.png)$/i;
     if (!['GET', 'HEAD'].includes(req.method) || !publicFile.test(file)) {
       res.writeHead(404).end();
       return;

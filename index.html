@@ -233,6 +233,8 @@
         <h2>ALTIMA AI VISION w praktyce</h2>
         <p>Sprawdź rozmowę z wirtualną asystentką, wybór przykładowego arkusza A/B/C, maksymalnie trzech kryteriów i wygenerowanie demonstracyjnego podsumowania.</p>
         <a class="btn btn-secondary" href="?view=glasses">Tryb okularów</a>
+        <button class="btn btn-secondary" type="button" id="questStart" disabled>Uruchom AR na Quest 3</button>
+        <p id="questStatus" role="status"></p>
       </div>
 
       <div class="demo-grid">
@@ -363,5 +365,6 @@
   </dialog>
 
   <script src="app.js"></script>
+  <script type="module" src="quest-ar.js"></script>
 </body>
 </html>
