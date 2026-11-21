@@ -362,28 +362,46 @@ html{scroll-behavior:smooth}
 @media(max-width:750px){.altima-insight,.altima-automation,.altima-future,.altima-trust{padding:65px 16px}.automation-grid,.trust-grid{grid-template-columns:1fr}.criteria-fieldset{grid-template-columns:1fr}.insight-text h2,.altima-automation h2,.altima-future h2,.altima-trust h2{letter-spacing:-.5px}.process-illustration{margin:25px 0}.process-illustration figcaption{font-size:11px}}
 
 
-/* Redesigned on-site ALTIMA evaluation illustration — not a Canva slide. */
-.workflow-art{margin:34px 0 28px;border-radius:24px;overflow:hidden;background:#071b36;border:1px solid #70ddfa6e;box-shadow:0 22px 56px #143d6d39}
-.workflow-art__scene{min-height:490px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:26px;padding:92px clamp(20px,4vw,52px) 44px;isolation:isolate}
-.workflow-art__photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 44%;z-index:-2;filter:saturate(1.2) brightness(.8)}
-.workflow-art__scrim{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(4,22,52,.92) 0%,rgba(5,29,66,.55) 34%,rgba(5,27,62,.35) 53%,rgba(5,24,55,.88) 100%),linear-gradient(0deg,rgba(3,14,37,.59),transparent 43%)}
-.workflow-art__topline{position:absolute;top:29px;left:clamp(20px,4vw,52px);right:25px;color:#dcfaff;font-size:12px;letter-spacing:1.8px;font-weight:900;display:flex;align-items:center;gap:14px;text-shadow:0 1px 14px #062047}
-.workflow-art__signal{width:10px;height:10px;flex:0 0 10px;border-radius:50%;background:#68fbe1;box-shadow:0 0 17px #50ebfa}
-.workflow-art__sep{color:#6beaff;font-weight:400}
-.workflow-art__panel{flex:0 1 300px;max-width:345px;min-width:0;padding:23px 24px;border-radius:17px;background:#071c3de8;backdrop-filter:blur(12px);border:1px solid #8ceaff9e;box-shadow:0 15px 48px #010d29a3}
-.workflow-art__eyebrow{display:block;color:#7befff;letter-spacing:1.8px;font-weight:900;font-size:11px}
-.workflow-art__panel h3{color:white;font-size:23px;line-height:1.2;margin:12px 0 17px;letter-spacing:-.4px}
-.workflow-art__letters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
-.workflow-art__letters span{display:grid;place-items:center;min-height:72px;color:white;font-size:31px;font-weight:950;border-radius:11px;border:1px solid #7ceeffba;background:linear-gradient(135deg,#117ab9c9,#084276c9);box-shadow:inset 0 0 17px #3ecffd32}
-.workflow-art__panel-divider{height:1px;margin:20px 0;border:0;background:linear-gradient(90deg,#8aeefc66,transparent)}
-.workflow-art__panel p{color:#cde9f7;font-size:16px;line-height:1.6;margin:12px 0 0}
-.workflow-art__panel p strong{color:#fff}
-.workflow-art__timeline{position:relative;display:grid;gap:15px;padding:3px 0 2px 23px}
-.workflow-art__timeline:before{position:absolute;content:"";top:10px;bottom:12px;left:6px;border-left:2px solid #57c9f6}
-.workflow-art__timeline>span{position:relative;display:block;color:#dcf7ff;font-size:15px;line-height:1.4}
-.workflow-art__timeline>span:before{position:absolute;content:"";left:-23px;top:5px;width:10px;height:10px;border:2px solid #88f4ff;background:#0a528c;border-radius:50%;box-shadow:0 0 11px #70e9ff}
-.workflow-art__link{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:25px;padding:11px 15px;border-radius:10px;color:#03254a!important;background:#81eeff;font-size:13px;font-weight:900;text-decoration:none}
-.workflow-art__link:hover{background:#c7faff}
-.workflow-art figcaption{padding:12px 24px;background:#0d2d54;color:#cde8f5;font-size:12px;line-height:1.65}
-@media(max-width:940px){.workflow-art__scene{align-items:stretch;min-height:540px}.workflow-art__panel{flex:0 1 48%;max-width:none}.workflow-art__photo{object-position:center}}
-@media(max-width:680px){.workflow-art__scene{padding:92px 17px 22px;display:grid;gap:18px;min-height:0}.workflow-art__panel{padding:19px;max-width:none;width:100%;box-sizing:border-box}.workflow-art__topline{left:17px;top:23px;letter-spacing:1px;font-size:10px;line-height:1.6}.workflow-art__photo{object-position:45% center}.workflow-art__scrim{background:#041a3dd1}.workflow-art__panel h3{font-size:21px}.workflow-art figcaption{padding:12px 17px}}
+
+/* ALTIMA process graphic — photographic/holographic presentation visual, website-only. */
+.altima-process-visual{margin:34px 0 29px;border:1px solid #56bde9b3;border-radius:23px;overflow:hidden;background:#091c3d;box-shadow:0 26px 62px rgba(11,58,103,.22)}
+.apv-stage{position:relative;isolation:isolate;overflow:hidden;padding:23px clamp(19px,3vw,45px) 20px;background:radial-gradient(ellipse at 50% 50%,rgba(21,122,181,.44),transparent 38%),radial-gradient(ellipse at 86% 7%,rgba(71,225,255,.15),transparent 32%),linear-gradient(125deg,#061731 0%,#103b73 54%,#061a3e 100%);color:#fff}
+.apv-stage:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.39;background:repeating-linear-gradient(90deg,transparent 0,transparent 71px,#91e8ff19 72px),repeating-linear-gradient(0deg,transparent 0,transparent 71px,#91e8ff18 72px)}
+.apv-stage:after{content:"";position:absolute;z-index:-1;left:20%;bottom:-47%;width:60%;aspect-ratio:1;border-radius:50%;box-shadow:0 0 140px #139be975;border:1px solid #b3f7ff28}
+.apv-top{display:flex;align-items:center;flex-wrap:wrap;gap:12px;color:#caefff;font-size:11px;font-weight:900;letter-spacing:1.3px;line-height:1.7}
+.apv-top b{font-weight:800;color:#6be9ff}
+.apv-dot,.apv-label-signal{display:inline-block;flex:none;width:8px;height:8px;background:#5ff6d3;border-radius:50%;box-shadow:0 0 14px #6efee6}
+.apv-top-separator{color:#ff5675}
+.apv-heading{text-align:center;margin:33px auto 10px;max-width:800px}
+.apv-eyebrow,.apv-card-kicker{font-size:11px;letter-spacing:2px;color:#75eaff;font-weight:900}
+.apv-heading h3{font-size:clamp(28px,3vw,44px);color:#fff;font-weight:900;line-height:1.13;letter-spacing:-1.2px;margin:10px 0 10px;text-shadow:0 8px 27px #001b38}
+.apv-heading p{margin:0;color:#c9edfd;font-size:16px;line-height:1.6}
+.apv-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(235px,1.13fr) minmax(0,1fr);align-items:center;gap:clamp(12px,1.6vw,24px);position:relative;min-height:400px}
+.apv-card{position:relative;z-index:3;background:linear-gradient(150deg,#0b2b54eb,#0b224adf);border:1px solid rgba(137,237,255,.75);border-radius:16px;padding:21px clamp(14px,1.7vw,24px);backdrop-filter:blur(15px);box-shadow:0 12px 46px #010e2fa3;min-width:0}
+.apv-card h4{color:#fff;font-size:clamp(19px,1.65vw,25px);line-height:1.2;margin:10px 0 17px;letter-spacing:-.35px}
+.apv-forms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.apv-forms>span{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:85px;min-width:0;border:1px solid #80eaffb3;border-radius:11px;background:linear-gradient(135deg,#126ca4d9,#10365ed1);box-shadow:inset 0 0 17px #19dbff30}
+.apv-forms b{font-size:34px;color:#fff;line-height:1.1}
+.apv-forms small{font-size:10px;color:#bfeeff;font-weight:750;margin-top:6px}
+.apv-card-rule{height:1px;background:linear-gradient(90deg,#76e9ff69,transparent);margin:21px 0}
+.apv-card p{font-size:14px;line-height:1.7;margin:10px 0 15px;color:#d0ebfc}
+.apv-card p strong{color:white}
+.apv-mini-tags{display:flex;flex-wrap:wrap;gap:7px}
+.apv-mini-tags>span{border:1px solid #73dcff6e;border-radius:7px;padding:6px 8px;background:#3bd6ff16;color:#c7f2ff;font-size:11px;font-weight:700}
+.apv-character{position:relative;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0;isolation:isolate;min-height:405px}
+.apv-character img{position:relative;display:block;width:105%;max-height:383px;height:auto;object-fit:contain;object-position:bottom center;z-index:1;filter:saturate(1.16) drop-shadow(0 0 31px #38bfff50);-webkit-mask-image:radial-gradient(ellipse 76% 76% at 50% 52%,#000 40%,transparent 100%);mask-image:radial-gradient(ellipse 76% 76% at 50% 52%,#000 40%,transparent 100%)}
+.apv-orbit{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:93%;aspect-ratio:1;border-radius:50%;border:1px solid #78f0ff85;box-shadow:0 0 45px #18dcff26,inset 0 0 40px #18dcff16;z-index:-1}
+.apv-orbit--two{width:71%;border-style:dashed;border-color:#85eaff9a;opacity:.65}
+.apv-character-label{position:absolute;bottom:7px;z-index:3;display:flex;align-items:center;gap:8px;padding:12px 17px;border-radius:999px;border:1px solid #80ebffb3;background:#051c43ec;color:white;font-size:18px;box-shadow:0 12px 36px #031a43a8}
+.apv-character-label b{color:#79e9ff}
+.apv-character-label small{font-weight:800;font-size:9px;color:#bae6f9;letter-spacing:1px;margin-left:6px}
+.apv-steps{display:grid;gap:13px;position:relative;padding:4px 0 3px 24px}
+.apv-steps:before{content:"";position:absolute;top:10px;bottom:12px;left:7px;border-left:2px solid #64cff2}
+.apv-steps span{position:relative;display:block;color:#dff8ff;font-size:13px;line-height:1.45}
+.apv-steps span:before{content:"";position:absolute;left:-23px;top:5px;width:10px;height:10px;border-radius:50%;background:#145a99;border:2px solid #8ef6ff;box-shadow:0 0 12px #50dfff}
+.apv-cta{display:inline-flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;margin-top:20px;border-radius:9px;background:linear-gradient(110deg,#65eaff,#98f3ff);color:#062b50!important;font-size:12px;font-weight:900;text-decoration:none;box-shadow:0 7px 23px #00d6ff45}
+.apv-cta:hover{background:#c7faff}
+.apv-bottom{margin-top:14px;padding-top:16px;border-top:1px solid #75eaff47;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#b5e2f4;font-size:11px;font-weight:750;letter-spacing:.5px}
+.altima-process-visual figcaption{font-size:12px;line-height:1.65;padding:11px 20px;color:#c8e6f5;background:#0c2a50}
+@media(max-width:1000px){.apv-layout{grid-template-columns:1fr 1fr;gap:19px}.apv-character{grid-column:1/-1;grid-row:1;min-height:340px}.apv-character img{max-height:310px;width:65%}.apv-card{align-self:stretch}.apv-orbit{width:min(330px,80%)}}
+@media(max-width:650px){.apv-stage{padding:17px 15px 15px}.apv-top{gap:8px;font-size:9px;letter-spacing:.4px}.apv-heading{text-align:left;margin:26px 0 15px}.apv-heading h3{font-size:29px;letter-spacing:-.65px}.apv-heading p{font-size:14px}.apv-layout{grid-template-columns:1fr;gap:14px}.apv-character{grid-row:1;grid-column:1;min-height:275px}.apv-character img{width:min(360px,95%);max-height:265px}.apv-character-label{padding:9px 11px;font-size:14px}.apv-character-label small{font-size:8px}.apv-card{padding:19px}.apv-forms>span{min-height:75px}.apv-bottom{font-size:9px;flex-wrap:wrap}.altima-process-visual figcaption{font-size:11px}}
