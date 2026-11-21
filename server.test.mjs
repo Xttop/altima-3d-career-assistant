@@ -30,7 +30,7 @@ test('chat validates turns, forwards context and reports provider failures', asy
   const send = (overrides = {}) => fetch(url + '/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ language: 'ru-RU', mode: 'mentor', messages, ...overrides }),
+    body: JSON.stringify({ language: 'uk-UA', mode: 'mentor', messages, ...overrides }),
   });
 
   assert.equal((await fetch(url)).status, 200);
@@ -44,7 +44,7 @@ test('chat validates turns, forwards context and reports provider failures', asy
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { reply: 'Расскажите о своём опыте.' });
   assert.deepEqual(upstreamBody.input, messages);
-  assert.match(upstreamBody.instructions, /Russian/);
+  assert.match(upstreamBody.instructions, /Ukrainian/);
   assert.equal(upstreamBody.store, false);
   status = 429;
   assert.equal((await send()).status, 429);
