@@ -590,3 +590,14 @@ micBtn.addEventListener('click', () => {
     setSpeechStatus('Nie udało się uruchomić mikrofonu. Możesz pisać.');
   }
 });
+
+if (new URLSearchParams(location.search).get('view') === 'glasses') {
+  document.body.classList.add('glasses-view');
+  document.title = 'ALTIMA AI VISION — Tryb okularów';
+}
+
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  navigator.serviceWorker.register('./service-worker.js').catch(error => {
+    console.warn('Nie udało się zarejestrować aplikacji ALTIMA.', error);
+  });
+}

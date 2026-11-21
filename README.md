@@ -107,3 +107,19 @@ The browser's voice-recognition service may have its own support/privacy restric
 - Siamion Yurtsevich — Software Engineer, AI & Development
 
 The project is a demonstrator. Do not use it for real employee evaluation or automated employment decisions.
+
+## Phone app and glasses browser
+
+ALTIMA can be installed as a web app from the browser menu over HTTPS.
+On iPhone, open the site in Safari and use Share → Add to Home Screen.
+On Android, use Chrome’s Install app or Add to home screen command.
+Chat requires a network connection. The service worker does not cache
+chat, forms or personal data.
+
+Open the chat section and select **Tryb okularów**, or use the URL query
+`?view=glasses`. This view uses larger captions and the existing microphone,
+speech and interruption controls. It requires a browser with the relevant
+speech APIs and microphone permission. It can also run on a phone paired
+with glasses that function as a Bluetooth headset. Native glasses apps,
+heads-up overlays, and device-specific microphone routing require testing
+with the selected hardware and its SDK.

@@ -552,3 +552,49 @@ html{scroll-behavior:smooth}
 
 .role-visual:hover, .role-visual:focus-visible { border-color: var(--blue); }
 .role-visual:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+.glasses-exit { display: none; }
+.glasses-view .glasses-exit { display: inline-flex; }
+
+.glasses-view {
+  color-scheme: dark;
+  background: var(--navy);
+  color: white;
+}
+
+.glasses-view main > section:not(#demo),
+.glasses-view :is(.topnav, .topbar > .btn-primary, #demo > .section-head,
+  .assistant-stage-box, .evaluation-box, .footer, .site-bg-glow) {
+  display: none;
+}
+
+.glasses-view #demo {
+  padding: clamp(12px, 4vw, 40px);
+  background: var(--navy);
+}
+
+.glasses-view .demo-grid {
+  display: block;
+  max-width: 760px;
+}
+
+.glasses-view .chat-box, .glasses-view .chat-log {
+  background: var(--navy-2);
+  color: white;
+  border-color: #4286a5;
+}
+
+.glasses-view .chat-log {
+  min-height: 180px;
+  max-height: max(180px, 48dvh);
+  font-size: clamp(1.125rem, 3vw, 1.5rem);
+}
+
+.glasses-view .chat-header small, .glasses-view .speech-status { color: #c4f3ff; }
+.glasses-view :is(.voice-btn, .chat-form :is(input, button)) { min-height: 48px; }
+.glasses-view :is(input, select) { font-size: 16px; }
+
+@media (max-width: 480px) {
+  .glasses-view .topbar { flex-wrap: wrap; }
+  .glasses-view .glasses-exit { width: auto; }
+}
