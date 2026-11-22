@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: altima-career-voice-test
+    runtime: node
+    plan: free
+    branch: feat/altima-career-voice
+    autoDeployTrigger: "off"
+    buildCommand: node --check server.mjs && node --check app.js
+    startCommand: node server.mjs
+    healthCheckPath: /api/status
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: HOST
+        value: 0.0.0.0

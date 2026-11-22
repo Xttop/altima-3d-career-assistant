@@ -1,4 +1,4 @@
-const modeButtons = document.querySelectorAll('.mode');
+const modeButtons = document.querySelectorAll('[data-mode]');
 const chatLog = document.getElementById('chatLog');
 const chatForm = document.getElementById('chatForm');
 const chatInput = document.getElementById('chatInput');
@@ -71,7 +71,7 @@ function addMessage(text, role='ai'){
   chatLog.scrollTop = chatLog.scrollHeight;
 }
 
-function replyTo(prompt){
+function demoReply(prompt){
   // Local, scripted demonstration. No external model or real HR databases.
   const text = String(prompt).toLowerCase();
   if (/arkusz|formularz|kryteri|a b c|a\/b\/c/.test(text))
@@ -91,19 +91,42 @@ function replyTo(prompt){
   return modeReplies[currentMode];
 }
 
-modeButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    modeButtons.forEach(b => b.classList.toggle('active', b === btn));
-    currentMode = btn.dataset.mode;
-    addMessage(modeReplies[currentMode], 'ai');
+function selectMode(mode) {
+  currentMode = mode;
+  modeButtons.forEach(button => {
+    const selected = button.dataset.mode === mode;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+}
+
+selectMode(currentMode);
+modeButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    selectMode(button.dataset.mode);
+    if (chatMode === 'demo') deliverReply(modeReplies[currentMode]);
+  });
+});
+
+let lastRolePrompt = '';
+document.querySelectorAll('[data-role-shortcut]').forEach(shortcut => {
+  shortcut.addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    selectMode(shortcut.dataset.roleShortcut);
+    const { rolePrompt } = shortcut.dataset;
+    if (rolePrompt && (!chatInput.value.trim() || chatInput.value === lastRolePrompt)) {
+      chatInput.value = rolePrompt;
+      lastRolePrompt = rolePrompt;
+    }
+    focusDemoField(chatInput);
   });
 });
 
 quickButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     const prompt = btn.dataset.prompt;
-    addMessage(prompt, 'user');
-    setTimeout(() => addMessage(replyTo(prompt), 'ai'), 250);
+    sendMessage(prompt);
   });
 });
 
@@ -111,9 +134,8 @@ chatForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const value = chatInput.value.trim();
   if (!value) return;
-  addMessage(value, 'user');
   chatInput.value = '';
-  setTimeout(() => addMessage(replyTo(value), 'ai'), 250);
+  sendMessage(value);
 });
 
 const criteriaBoxes = Array.from(document.querySelectorAll('input[name="criterion"]'));
@@ -127,9 +149,7 @@ function updateCriteriaLimit(){
 criteriaBoxes.forEach(box => box.addEventListener('change',updateCriteriaLimit));
 updateCriteriaLimit();
 
-/* Accessible navigation from the four editorial process icons into the real
-   capabilities of the public demonstration. No fake server actions. */
-const featureButtons = Array.from(document.querySelectorAll('.ape-feature-button'));
+const featureButtons = Array.from(document.querySelectorAll('[data-demo-target]'));
 const featureStatus = document.getElementById('apeFeatureStatus');
 const demoForm = document.querySelector('#demo .evaluation-box');
 const scenarioTargets = {
@@ -151,6 +171,18 @@ const scenarioTargets = {
     status:'Otworzono etap rozmów. Wybierz rozmowę rozpoczynającą lub oceniającą.',
     response:'Przygotujmy rozmowę. Możesz wybrać rozmowę rozpoczynającą lub oceniającą i omówić cele, osiągnięcia oraz oczekiwania. Wybór etapu znajdziesz w formularzu.'
   },
+  criteria: {
+    stage: 'Rozmowa rozpoczynająca',
+    field: 'criteriaStatus',
+    status: 'Możesz zaznaczyć maksymalnie trzy dodatkowe kryteria.',
+    response: 'Wybierz do trzech dodatkowych kryteriów, które najlepiej opisują oczekiwania wobec stanowiska.'
+  },
+  review: {
+    stage: 'Rozmowa oceniająca',
+    field: 'evaluationStage',
+    status: 'Otworzono etap rozmowy oceniającej.',
+    response: 'Podczas rozmowy oceniającej omów konkretne przykłady pracy, informację zwrotną i cele na kolejny okres.'
+  },
   report: {
     stage:'Podsumowanie i rozwój',
     field:'draftOutput',
@@ -171,16 +203,40 @@ featureButtons.forEach(btn=>{
     if(featureStatus) featureStatus.textContent=action.status;
     if(btn.dataset.demoTarget==='report') buildReport();
     addMessage(action.response,'ai');
-    const field=document.getElementById(action.field);
-    const target=field || demoForm;
-    const reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    target.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});
-    if(field){
-      if(field.id==='draftOutput' && !field.hasAttribute('tabindex')) field.setAttribute('tabindex','-1');
-      field.focus({preventScroll:true});
-    }
+    const field = action.field === 'criteriaStatus'
+      ? criteriaBoxes.find(box => !box.disabled)
+      : document.getElementById(action.field);
+    focusDemoField(field || demoForm);
   });
 });
+
+function focusDemoField(field) {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  field.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+  if (field.tabIndex < 0) field.tabIndex = -1;
+  field.focus({ preventScroll: true });
+}
+
+const iconDetails = {
+  deadlines: ['Terminy i powiadomienia', 'W formularzu demo możesz wybrać etap oceny i wpisać okres. Automatyczne przypomnienia i powiadomienia są planowane.'],
+  staff: ['Zmiany kadrowe', 'Zmiana przełożonego, zakresu zadań lub dłuższa nieobecność mogą wpłynąć na przebieg oceny. W prototypie możesz opisać sytuację w obserwacjach.'],
+  ar: ['Okulary AR', 'To koncepcja wskazówek wyświetlanych w polu widzenia. Obecny prototyp umożliwia rozmowę w przeglądarce.'],
+  access: ['Dostęp według uprawnień', 'Docelowy dostęp zależy od roli pracownika, przełożonego lub kadr. W publicznym demo korzystaj wyłącznie z przykładowych danych.'],
+  privacy: ['RODO i bezpieczeństwo', 'Używaj fikcyjnych danych. Przed wdrożeniem urząd musi zweryfikować uprawnienia, sposób przetwarzania i ochronę danych.'],
+  approval: ['Człowiek zatwierdza ocenę', 'W demo ALTIMA tworzy projekt do pobrania jako TXT. Formalną ocenę sprawdza i zatwierdza uprawniona osoba.'],
+};
+
+const detailsDialog = document.getElementById('iconDetails');
+document.querySelectorAll('[data-icon-detail]').forEach(button => {
+  button.setAttribute('aria-haspopup', 'dialog');
+  button.addEventListener('click', () => {
+    const [title, description] = iconDetails[button.dataset.iconDetail];
+    document.getElementById('iconDetailsTitle').textContent = title;
+    document.getElementById('iconDetailsText').textContent = description;
+    detailsDialog.showModal();
+  });
+});
+
 function buildReport(){
   const employee = document.getElementById('employeeName').value.trim() || '(nie podano)';
   const period = document.getElementById('evaluationPeriod').value.trim() || '(nie podano)';
@@ -288,158 +344,507 @@ function tick(timestamp){
 autoRotateBtn.textContent = 'Wyłącz auto‑obrót';
 requestAnimationFrame(tick);
 
-/* Polish natural browser TTS + opt-in microphone speech recognition.
-   No external AI API. Speech recognition service availability depends on the browser.
-   All answers remain rule-based demo responses. */
 const voiceBtn = document.getElementById('voiceBtn');
 const micBtn = document.getElementById('micBtn');
 const voiceSelect = document.getElementById('voiceSelect');
 const voiceSpeed = document.getElementById('voiceSpeed');
+const languageSelect = document.getElementById('speechLanguage');
 const speechStatus = document.getElementById('speechStatus');
-const synthSupported = ('speechSynthesis' in window) && ('SpeechSynthesisUtterance' in window);
+const chatStatus = document.getElementById('chatStatus');
+const interruptBtn = document.getElementById('interruptBtn');
+const stage = document.querySelector('.assistant-stage-box');
+const synth = window.speechSynthesis;
 const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+const femaleVoices = /Paulina|Zofia|Agnieszka|Kasia|Maja|Oksana|Olena|Kateryna|Natalia|Jenny|Aria|Samantha|Serena|female|Google polski/i;
 let voiceOn = false;
-let listening = false;
 let recognition = null;
-let currentVoices = [];
-const preferredVoices = /Paulina|Zofia|Agnieszka|Kasia|Maja|female|kobieta|Google polski|Microsoft.*Polish/i;
-const demoGreeting = 'Dzień dobry. Jestem Altima, Twoja asystentka kariery. Miło Cię poznać. Możesz ze mną porozmawiać o ocenie okresowej, planach rozwoju albo celach zawodowych. W czym mogę Ci dzisiaj pomóc?';
-function setSpeechStatus(message) { if (speechStatus) speechStatus.textContent = message; }
-function normalizePLVoice(voice) { return voice.lang && /^pl([_-]|$)/i.test(voice.lang); }
-function voiceQuality(voice){
-  let score = 0;
-  if (normalizePLVoice(voice)) score += 20;
-  if (/natural|neural|online|premium|enhanced/i.test(voice.name)) score += 8;
-  if (preferredVoices.test(voice.name)) score += 5;
-  if (voice.default) score += 1;
-  return score;
+let audioCapture;
+const audioType = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus']
+  .find(type => window.MediaRecorder?.isTypeSupported(type));
+const canRecordAudio = Boolean(audioType && navigator.mediaDevices?.getUserMedia);
+let utterance = null;
+let request = null;
+let chatMode = 'pending';
+const history = [];
+
+function setSpeechStatus(message) {
+  speechStatus.textContent = message;
 }
-function loadPolishVoices(){
-  if (!synthSupported) return;
-  currentVoices = window.speechSynthesis.getVoices().filter(normalizePLVoice).sort((a,b)=>voiceQuality(b)-voiceQuality(a));
-  if(!voiceSelect) return;
-  const prior = voiceSelect.value;
-  voiceSelect.innerHTML = '';
-  const automatic = document.createElement('option');
-  automatic.value = '';
-  automatic.textContent = 'Automatyczny (najlepszy)';
-  voiceSelect.appendChild(automatic);
-  currentVoices.forEach((voice, i)=>{
-    const option = document.createElement('option');
-    option.value = String(i);
-    option.textContent = voice.name + (voice.localService ? ' • lokalny' : '');
-    voiceSelect.appendChild(option);
-  });
-  if(prior !== '' && currentVoices[Number(prior)]) voiceSelect.value = prior;
-  if(!currentVoices.length) setSpeechStatus('Brak głosu pl-PL w systemie. Możesz pisać wiadomości.');
+
+async function detectService() {
+  if (location.protocol === 'file:') return 'demo';
+  const response = await fetch('./api/status', { signal: AbortSignal.timeout(5000) });
+  if (response.status === 404) return 'demo';
+  if (!response.ok) throw new Error('connection');
+  return (await response.json()).ai ? 'live' : 'unconfigured';
 }
-function stopSpeaking() { if (synthSupported) window.speechSynthesis.cancel(); }
-function speakAltima(message){
-  if (!voiceOn || !synthSupported) return;
+
+const service = detectService().catch(() => 'unavailable').then(mode => {
+  chatMode = mode;
+  chatStatus.textContent = { live: 'AI', demo: 'Tryb demonstracyjny', unconfigured: 'Brak konfiguracji AI', unavailable: 'Brak połączenia' }[mode];
+  return mode;
+});
+
+function updateInterrupt() {
+  interruptBtn.disabled = !request && !utterance && !audioCapture?.transcribing;
+  stage.classList.toggle('thinking', Boolean(request) && !utterance);
+}
+
+function stopSpeaking() {
+  if (!utterance) return;
+  utterance = null;
+  synth.cancel();
+  stage.classList.remove('speaking');
+  updateInterrupt();
+}
+
+function interruptReply() {
+  request?.abort();
+  request = null;
   stopSpeaking();
-  const utterance = new SpeechSynthesisUtterance(String(message).replace(/ALTIMA AI VISION/g, 'Altima'));
-  utterance.lang = 'pl-PL';
-  utterance.rate = Math.min(1,Math.max(0.7,Number(voiceSpeed?.value||0.91)));
-  utterance.pitch = 1.02;
-  utterance.volume = 1;
-  const chosenIndex = voiceSelect?.value;
-  const chosenVoice = chosenIndex !== '' && chosenIndex != null ? currentVoices[Number(chosenIndex)] : currentVoices[0];
-  if(chosenVoice) utterance.voice = chosenVoice;
-  utterance.onstart = ()=>setSpeechStatus('ALTIMA mówi…');
-  utterance.onend = ()=>setSpeechStatus('Gotowa do rozmowy. Naciśnij mikrofon i zadaj pytanie.');
-  utterance.onerror = ()=>setSpeechStatus('Nie udało się odtworzyć głosu. Sprawdź ustawienia przeglądarki.');
-  window.speechSynthesis.speak(utterance);
+  updateInterrupt();
 }
-function setVoiceEnabled(enabled){
-  voiceOn = !!enabled && synthSupported;
-  if(voiceBtn){
-    voiceBtn.setAttribute('aria-pressed',String(voiceOn));
-    voiceBtn.textContent=voiceOn?'🔇 Wyłącz głos ALTIMA':'🔊 Włącz głos ALTIMA';
+
+function voiceScore(voice) {
+  return (femaleVoices.test(voice.name) ? 8 : 0) + (/natural|neural|premium|enhanced/i.test(voice.name) ? 4 : 0) +
+    (voice.lang === languageSelect.value ? 2 : 0);
+}
+
+function loadVoices() {
+  const prior = voiceSelect.value;
+  const prefix = languageSelect.value.split('-')[0];
+  const options = [new Option('Automatyczny (najlepszy)', '')];
+  const voices = synth?.getVoices().filter(voice => voice.lang.split(/[-_]/)[0] === prefix) || [];
+  voices.sort((a, b) => voiceScore(b) - voiceScore(a));
+  options.push(...voices.map(voice => new Option(voice.name, voice.voiceURI)));
+  voiceSelect.replaceChildren(...options);
+  if (voices.some(voice => voice.voiceURI === prior)) voiceSelect.value = prior;
+}
+
+function speak(message) {
+  if (!voiceOn || !synth) return;
+  stopSpeaking();
+  const speech = new SpeechSynthesisUtterance(message);
+  utterance = speech;
+  speech.lang = languageSelect.value;
+  speech.rate = Number(voiceSpeed.value);
+  const uri = voiceSelect.value || voiceSelect.options[1]?.value;
+  const voice = synth.getVoices().find(available => available.voiceURI === uri);
+  if (voice) speech.voice = voice;
+
+  speech.onstart = () => {
+    if (utterance !== speech) return;
+    stage.classList.add('speaking');
+    setSpeechStatus('ALTIMA mówi…');
+  };
+  function finish(message) {
+    if (utterance !== speech) return;
+    utterance = null;
+    stage.classList.remove('speaking');
+    updateInterrupt();
+    setSpeechStatus(message);
   }
-  if(!voiceOn) { stopSpeaking(); setSpeechStatus('Głos wyłączony. Rozmowa tekstowa nadal działa.'); }
+  speech.onend = () => finish('Gotowa do rozmowy.');
+  speech.onerror = () => finish('Nie udało się odtworzyć głosu. Odpowiedź jest widoczna w rozmowie.');
+  updateInterrupt();
+  synth.speak(speech);
 }
-if(synthSupported){
-  loadPolishVoices();
-  window.speechSynthesis.addEventListener?.('voiceschanged',loadPolishVoices);
-  voiceBtn?.addEventListener('click',()=>{
-    if(listening && voiceOn) stopListening();
-    setVoiceEnabled(!voiceOn);
-    if(voiceOn) speakAltima(demoGreeting);
-  });
-} else {
-  if(voiceBtn){ voiceBtn.disabled=true; voiceBtn.textContent='Głos niedostępny'; }
-  if(voiceSelect) voiceSelect.disabled = true;
-  setSpeechStatus('Ta przeglądarka nie udostępnia syntezy mowy. Rozmowa tekstowa działa.');
+
+function deliverReply(reply) {
+  addMessage(reply, 'ai');
+  speak(reply);
 }
-if(!SpeechRecognitionAPI){
-  if(micBtn){ micBtn.disabled=true; micBtn.textContent='🎙️ Mikrofon niedostępny';micBtn.title='Do rozpoznawania mowy użyj aktualnej wersji Chrome lub Edge.'; }
-  if(synthSupported) setSpeechStatus('Aby mówić do ALTIMA, otwórz stronę w Chrome lub Edge i zezwól na mikrofon.');
-} else if (micBtn) {
-  recognition = new SpeechRecognitionAPI();
-  recognition.lang = 'pl-PL';
-  recognition.continuous = false;
-  recognition.interimResults = true;
-  recognition.maxAlternatives = 1;
-  recognition.onstart = ()=>{
-    listening = true;
-    micBtn.classList.add('listening');
-    micBtn.setAttribute('aria-pressed','true');
-    micBtn.textContent = '⏹️ Zatrzymaj nagrywanie';
-    setSpeechStatus('Słucham… Mów po polsku.');
-  };
-  recognition.onresult = (event)=>{
-    let finalText = '', interimText = '';
-    for (let i=event.resultIndex;i<event.results.length;i++){
-      const phrase = event.results[i][0].transcript;
-      if(event.results[i].isFinal) finalText += phrase;
-      else interimText += phrase;
+
+async function sendMessage(text, image) {
+  cancelRecognition();
+  interruptReply();
+  const controller = new AbortController();
+  request = controller;
+  const language = languageSelect.value;
+  const mode = currentMode;
+  const user = { role: 'user', content: text.slice(0, 2000) };
+  addMessage(image ? user.content + ' [zdjęcie z kamery]' : user.content, 'user');
+  updateInterrupt();
+  setSpeechStatus('ALTIMA przygotowuje odpowiedź…');
+  try {
+    const available = await service;
+    if (controller.signal.aborted) return;
+    if (available === 'demo') {
+      setSpeechStatus('Tryb demonstracyjny bez połączenia z modelem.');
+      deliverReply(demoReply(user.content));
+      return;
     }
-    if(interimText) setSpeechStatus('Rozpoznaję: '+interimText);
-    if(finalText.trim()){
-      setSpeechStatus('Rozpoznano: '+finalText.trim());
-      addMessage(finalText.trim(),'user');
-      setTimeout(()=>addMessage(replyTo(finalText.trim()),'ai'),350);
-    }
-  };
-  recognition.onerror = (event)=>{
-    const errors = {
-      'not-allowed':'Brak uprawnienia do mikrofonu. Zezwól na dostęp w ustawieniach przeglądarki.',
-      'service-not-allowed':'Rozpoznawanie mowy zostało zablokowane.',
-      'no-speech':'Nie usłyszałam głosu. Spróbuj ponownie.',
-      'audio-capture':'Nie wykryto działającego mikrofonu.',
-      'network':'Usługa rozpoznawania mowy jest chwilowo niedostępna.'
+    const response = await fetch('./api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ language, mode, messages: [...history, user], image }),
+      signal: controller.signal,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error);
+    if (controller.signal.aborted) return;
+    history.push(user, { role: 'assistant', content: data.reply });
+    if (history.length > 12) history.splice(0, 2);
+    chatStatus.textContent = 'AI';
+    setSpeechStatus('Odpowiedź gotowa.');
+    deliverReply(data.reply);
+  } catch (error) {
+    if (controller.signal.aborted) return;
+    const messages = {
+      not_configured: 'Serwer nie ma skonfigurowanego klucza AI.',
+      rate_limited: 'Usługa AI osiągnęła limit. Spróbuj ponownie za chwilę.',
+      provider_unavailable: 'Model AI jest chwilowo niedostępny. Spróbuj ponownie.',
     };
-    setSpeechStatus(errors[event.error] || 'Problem z rozpoznawaniem mowy: '+event.error);
-  };
-  recognition.onend = ()=>{
-    listening = false;
-    micBtn.classList.remove('listening');
-    micBtn.setAttribute('aria-pressed','false');
-    micBtn.textContent = '🎙️ Rozmawiaj z ALTIMA';
-  };
-  micBtn.addEventListener('click',()=>{
-    if(listening) { stopListening(); return; }
-    if(synthSupported && !voiceOn) setVoiceEnabled(true);
-    stopSpeaking();
-    try { recognition.start(); }
-    catch (error) { setSpeechStatus('Nie mogę uruchomić mikrofonu. Spróbuj ponownie.'); }
-  });
+    setSpeechStatus(messages[error.message] || 'Nie udało się połączyć z serwerem rozmowy. Spróbuj ponownie.');
+  } finally {
+    if (request === controller) request = null;
+    updateInterrupt();
+  }
 }
-function stopListening(){
-  try{recognition?.stop();}catch(error){ /* ignore */ }
+
+function setVoiceEnabled(enabled) {
+  voiceOn = enabled && Boolean(synth);
+  voiceBtn.setAttribute('aria-pressed', String(voiceOn));
+  voiceBtn.textContent = voiceOn ? '🔇 Wyłącz głos ALTIMA' : '🔊 Włącz głos ALTIMA';
+  if (!voiceOn) stopSpeaking();
 }
-// Speak only newly added AI responses, not user messages.
-// No auto-listening after a reply to avoid microphone feedback loops.
-if(chatLog && 'MutationObserver' in window){
-  const observer = new MutationObserver(mutations=>{
-    for(const mutation of mutations){
-      for(const node of mutation.addedNodes){
-        if(node.nodeType===1 && node.classList.contains('message') && node.classList.contains('ai')){
-          const bubble=node.querySelector('.bubble');
-          if(bubble) speakAltima(bubble.textContent);
-        }
-      }
+
+voiceBtn.disabled = !synth;
+voiceSelect.disabled = !synth;
+voiceSpeed.disabled = !synth;
+voiceBtn.addEventListener('click', () => setVoiceEnabled(!voiceOn));
+synth?.addEventListener('voiceschanged', loadVoices);
+loadVoices();
+interruptBtn.addEventListener('click', () => {
+  cancelRecognition();
+  interruptReply();
+  setSpeechStatus('Odpowiedź przerwana. Możesz zadać kolejne pytanie.');
+});
+languageSelect.addEventListener('change', () => {
+  cancelRecognition();
+  interruptReply();
+  loadVoices();
+  setSpeechStatus('Zmieniono język rozmowy.');
+});
+
+function cancelRecognition() {
+  if (audioCapture) {
+    const capture = audioCapture;
+    capture.controller.abort();
+    if (capture.recorder?.state === 'recording') capture.recorder.stop();
+    releaseAudio(capture);
+  }
+  if (!recognition) return;
+  const capture = recognition;
+  capture.onstart = capture.onresult = capture.onerror = null;
+  capture.onend = resetMicrophone;
+  capture.abort();
+}
+
+function resetMicrophone() {
+  recognition = null;
+  stage.classList.remove('listening');
+  micBtn.setAttribute('aria-pressed', 'false');
+  micBtn.classList.remove('listening');
+  micBtn.textContent = '🎙️ Rozmawiaj z ALTIMA';
+}
+
+if (!SpeechRecognitionAPI && !canRecordAudio) {
+  micBtn.disabled = true;
+  setSpeechStatus('Rozpoznawanie mowy jest niedostępne w tej przeglądarce. Możesz pisać.');
+}
+function markListening() {
+  micBtn.setAttribute('aria-pressed', 'true');
+  micBtn.classList.add('listening');
+  micBtn.textContent = '⏹️ Zakończ pytanie';
+}
+
+function releaseAudio(capture) {
+  clearTimeout(capture.timer);
+  capture.stream?.getTracks().forEach(track => track.stop());
+  if (audioCapture !== capture) return;
+  audioCapture = undefined;
+  micBtn.disabled = false;
+  resetMicrophone();
+  updateInterrupt();
+}
+
+async function submitAudio(capture, chunks) {
+  capture.stream.getTracks().forEach(track => track.stop());
+  clearTimeout(capture.timer);
+  if (capture.controller.signal.aborted) return;
+  capture.transcribing = true;
+  micBtn.disabled = false;
+  resetMicrophone();
+  updateInterrupt();
+  setSpeechStatus('Rozpoznaję nagranie…');
+  try {
+    const audio = new Blob(chunks, { type: capture.recorder.mimeType || audioType });
+    if (!audio.size || audio.size > 2_000_000) throw new Error('invalid_audio');
+    const response = await fetch('./api/transcribe', {
+      method: 'POST',
+      headers: { 'X-Altima-Language': capture.language },
+      body: audio,
+      signal: capture.controller.signal,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error);
+    if (capture.controller.signal.aborted) return;
+    releaseAudio(capture);
+    if (data.text) sendMessage(data.text);
+    else setSpeechStatus('Nie wykryto mowy. Spróbuj ponownie.');
+  } catch (error) {
+    if (capture.controller.signal.aborted) return;
+    const messages = {
+      invalid_audio: 'Nie udało się odczytać nagrania. Nagraj krótsze pytanie.',
+      rate_limited: 'Usługa mowy osiągnęła limit. Spróbuj później.',
+      not_configured: 'Serwer nie ma skonfigurowanego klucza AI.',
+    };
+    setSpeechStatus(messages[error.message] || 'Usługa rozpoznawania mowy jest niedostępna.');
+  } finally {
+    releaseAudio(capture);
+  }
+}
+
+async function recordAudio() {
+  const capture = { controller: new AbortController(), language: languageSelect.value };
+  audioCapture = capture;
+  micBtn.disabled = true;
+  setSpeechStatus('Uruchamiam mikrofon…');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    capture.stream = stream;
+    if (capture.controller.signal.aborted) {
+      releaseAudio(capture);
+      return;
     }
-  });
-  observer.observe(chatLog,{childList:true});
+    const recorder = new MediaRecorder(stream, { mimeType: audioType, audioBitsPerSecond: 48_000 });
+    capture.recorder = recorder;
+    const chunks = [];
+    recorder.addEventListener('dataavailable', event => {
+      if (event.data.size) chunks.push(event.data);
+    });
+    recorder.addEventListener('stop', () => submitAudio(capture, chunks), { once: true });
+    recorder.addEventListener('error', () => {
+      capture.controller.abort();
+      releaseAudio(capture);
+      setSpeechStatus('Nie udało się nagrać pytania.');
+    }, { once: true });
+    recorder.start();
+    capture.timer = setTimeout(() => {
+      if (recorder.state === 'recording') recorder.stop();
+    }, 30_000);
+    micBtn.disabled = false;
+    markListening();
+    stage.classList.add('listening');
+    setSpeechStatus('Słucham… Naciśnij „Zakończ pytanie”, gdy skończysz.');
+  } catch (error) {
+    if (capture.controller.signal.aborted) return;
+    releaseAudio(capture);
+    setSpeechStatus(error.name === 'NotAllowedError'
+      ? 'Zezwól na dostęp do mikrofonu w ustawieniach przeglądarki.'
+      : 'Nie udało się uruchomić mikrofonu. Możesz pisać.');
+  }
 }
+
+micBtn.addEventListener('click', async () => {
+  if (audioCapture?.recorder?.state === 'recording') {
+    micBtn.disabled = true;
+    audioCapture.recorder.stop();
+    return;
+  }
+  if (recognition) {
+    recognition.stop();
+    return;
+  }
+  cancelRecognition();
+  interruptReply();
+  setVoiceEnabled(true);
+  micBtn.disabled = true;
+  const available = await service;
+  micBtn.disabled = false;
+  if (canRecordAudio && available === 'live') {
+    recordAudio();
+    return;
+  }
+  if (!SpeechRecognitionAPI) {
+    setSpeechStatus('Nagrywanie pytań wymaga połączonej usługi AI.');
+    return;
+  }
+  const capture = new SpeechRecognitionAPI();
+  recognition = capture;
+  capture.lang = languageSelect.value;
+  capture.interimResults = true;
+  let transcript = '';
+  capture.onstart = () => {
+    stage.classList.add('listening');
+    setSpeechStatus('Słucham…');
+  };
+  capture.onresult = event => {
+    const latest = Array.from(event.results);
+    transcript = latest.filter(result => result.isFinal).map(result => result[0].transcript).join(' ').trim();
+    setSpeechStatus('Rozpoznaję: ' + latest.map(result => result[0].transcript).join(' '));
+  };
+  capture.onerror = event => {
+    transcript = '';
+    if (event.error === 'aborted') return;
+    const messages = {
+      'not-allowed': 'Zezwól na dostęp do mikrofonu w ustawieniach przeglądarki.',
+      'service-not-allowed': 'Przeglądarka zablokowała rozpoznawanie mowy.',
+      'no-speech': 'Nie wykryto mowy. Spróbuj ponownie.',
+      'audio-capture': 'Nie wykryto działającego mikrofonu.',
+      network: 'Usługa rozpoznawania mowy jest chwilowo niedostępna.',
+    };
+    setSpeechStatus(messages[event.error] || 'Nie udało się rozpoznać mowy.');
+  };
+  capture.onend = () => {
+    resetMicrophone();
+    if (transcript) sendMessage(transcript);
+  };
+  try {
+    capture.start();
+    markListening();
+    setSpeechStatus('Uruchamiam mikrofon…');
+  } catch {
+    resetMicrophone();
+    setSpeechStatus('Nie udało się uruchomić mikrofonu. Możesz pisać.');
+  }
+});
+
+if (new URLSearchParams(location.search).get('view') === 'glasses') {
+  document.body.classList.add('glasses-view');
+  document.title = 'ALTIMA AI VISION — Tryb okularów';
+}
+
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  navigator.serviceWorker.register('./service-worker.js').catch(error => {
+    console.warn('Nie udało się zarejestrować aplikacji ALTIMA.', error);
+  });
+}
+
+const cameraToggle = document.getElementById('cameraToggle');
+const cameraPreview = document.getElementById('cameraPreview');
+const cameraVideo = document.getElementById('cameraVideo');
+const cameraStill = document.getElementById('cameraStill');
+const cameraCapture = document.getElementById('cameraCapture');
+const cameraDiscard = document.getElementById('cameraDiscard');
+const cameraSend = document.getElementById('cameraSend');
+const cameraStatus = document.getElementById('cameraStatus');
+let cameraStream;
+let cameraAttempt = 0;
+let cameraFrame;
+
+function clearCameraFrame() {
+  cameraFrame = undefined;
+  cameraStill.removeAttribute('src');
+  cameraStill.hidden = true;
+  cameraDiscard.disabled = true;
+  cameraSend.disabled = true;
+}
+
+function stopCamera() {
+  cameraAttempt++;
+  cameraStream?.getTracks().forEach(track => track.stop());
+  cameraStream = undefined;
+  cameraVideo.srcObject = null;
+  cameraPreview.hidden = true;
+  cameraCapture.disabled = true;
+  cameraToggle.disabled = !navigator.mediaDevices?.getUserMedia;
+  cameraToggle.setAttribute('aria-pressed', 'false');
+  cameraToggle.textContent = 'Włącz kamerę';
+  clearCameraFrame();
+}
+
+if (!navigator.mediaDevices?.getUserMedia) {
+  cameraToggle.disabled = true;
+  cameraStatus.textContent = 'Kamera wymaga HTTPS i obsługi w przeglądarce.';
+}
+
+cameraToggle.addEventListener('click', async () => {
+  if (cameraStream) {
+    stopCamera();
+    cameraStatus.textContent = 'Kamera wyłączona.';
+    return;
+  }
+  const attempt = ++cameraAttempt;
+  cameraToggle.disabled = true;
+  cameraStatus.textContent = 'Czekam na dostęp do kamery…';
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 640 }, height: { ideal: 480 } },
+      audio: false,
+    });
+    if (attempt !== cameraAttempt) {
+      stream.getTracks().forEach(track => track.stop());
+      return;
+    }
+    cameraStream = stream;
+    for (const track of stream.getVideoTracks()) {
+      track.addEventListener('ended', () => {
+        if (cameraStream !== stream) return;
+        stopCamera();
+        cameraStatus.textContent = 'Połączenie z kamerą zakończyło się.';
+      });
+    }
+    cameraPreview.hidden = false;
+    cameraVideo.srcObject = stream;
+    cameraToggle.disabled = false;
+    cameraToggle.setAttribute('aria-pressed', 'true');
+    cameraToggle.textContent = 'Wyłącz kamerę';
+    cameraStatus.textContent = 'Podgląd jest widoczny tylko na Twoim urządzeniu.';
+  } catch (error) {
+    if (attempt !== cameraAttempt) return;
+    stopCamera();
+    cameraStatus.textContent = error.name === 'NotAllowedError'
+      ? 'Zezwól na dostęp do kamery w ustawieniach przeglądarki.'
+      : 'Kamera jest niedostępna lub używana przez inną aplikację.';
+  }
+});
+
+cameraVideo.addEventListener('loadeddata', () => {
+  cameraCapture.disabled = !cameraStream;
+});
+
+cameraCapture.addEventListener('click', async () => {
+  if (!cameraStream || !cameraVideo.videoWidth) return;
+  const canvas = document.createElement('canvas');
+  const scale = Math.min(1, 640 / Math.max(cameraVideo.videoWidth, cameraVideo.videoHeight));
+  canvas.width = Math.max(1, Math.round(cameraVideo.videoWidth * scale));
+  canvas.height = Math.max(1, Math.round(cameraVideo.videoHeight * scale));
+  canvas.getContext('2d').drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+  let frame = canvas.toDataURL('image/jpeg', 0.72);
+  if (frame.length > 360_000) frame = canvas.toDataURL('image/jpeg', 0.45);
+  if (!frame.startsWith('data:image/jpeg;base64,') || frame.length > 360_000) {
+    cameraStatus.textContent = 'Nie udało się przygotować zdjęcia. Spróbuj ponownie.';
+    return;
+  }
+  cameraFrame = frame;
+  cameraStill.src = frame;
+  cameraStill.hidden = false;
+  cameraDiscard.disabled = false;
+  const available = await service;
+  if (cameraFrame !== frame) return;
+  cameraSend.disabled = available !== 'live';
+  cameraStatus.textContent = available === 'live'
+    ? 'Zdjęcie gotowe. Możesz wpisać pytanie i wysłać zdjęcie do AI.'
+    : 'Zdjęcie pozostaje na urządzeniu. Wysyłanie wymaga działającej usługi AI.';
+});
+
+cameraDiscard.addEventListener('click', () => {
+  clearCameraFrame();
+  cameraStatus.textContent = 'Zdjęcie usunięte.';
+});
+
+cameraSend.addEventListener('click', () => {
+  if (!cameraFrame || chatMode !== 'live') return;
+  const question = chatInput.value.trim() || 'Opisz, co widać na zdjęciu, i zapytaj, w czym możesz pomóc.';
+  const frame = cameraFrame;
+  chatInput.value = '';
+  clearCameraFrame();
+  cameraStatus.textContent = 'Zdjęcie dołączono do wiadomości.';
+  sendMessage(question, frame);
+});
+
+window.addEventListener('pagehide', stopCamera);
+
+window.addEventListener('pagehide', cancelRecognition);

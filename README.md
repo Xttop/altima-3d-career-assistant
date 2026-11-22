@@ -27,6 +27,44 @@ ALTIMA explores a **voice-first, visual AI assistant** for the periodic employee
 4. Select a sample A/B/C label, stage, up to three additional criteria, and add observations using **fictional** data.
 5. Click **Utwórz projekt** and **Pobierz podsumowanie**.
 
+## Run the AI assistant
+
+Use Node.js 22 or later. No npm install or build is required. Configure
+`OPENAI_API_KEY` as a server-side environment secret, then run:
+
+```sh
+node server.mjs
+```
+
+Open `http://127.0.0.1:8080`. The optional `OPENAI_MODEL` setting defaults to
+`gpt-4.1-mini`. The backend needs HTTPS access to `api.openai.com`. Set
+`HOST=0.0.0.0` when running behind an environment preview proxy, and use
+HTTPS for microphone access outside localhost. Keep credentials outside
+the document root and use access controls and request quotas before
+exposing the keyed backend publicly.
+
+Choose Polish, Ukrainian, or English, then click the microphone to ask one
+question. Use the microphone or **Przerwij odpowiedź** to interrupt, and
+use the text field if speech recognition is unavailable. Voice quality and microphone support depend on the browser and installed voices.
+On a configured server, press the microphone again to submit up to 30 seconds
+of audio for OpenAI transcription. The browser's recognition service is used
+when server recording is unavailable and the browser supports recognition.
+The server sends the transcript and up to six completed turns to OpenAI with
+`store: false`. The page keeps the visible conversation in memory until
+reload. Use sample data and omit personal or employee records.
+
+Try a mock interview, a career exploration conversation, or the CV
+shortcut. The 360° image viewer and evaluation TXT export still work
+independently. The avatar sways during speech. Its static image frames
+lack separate facial controls for lip sync and expressions.
+
+## Checks
+
+Run `node --check app.js` and `node --test`. For a live smoke check, use a
+configured key and a microphone-enabled browser such as Chrome or Edge.
+Ask a follow-up about an earlier answer, interrupt playback with a new
+question, and repeat in each supported language.
+
 Do not enter real employees' personal or confidential information into this public prototype.
 
 ## The challenge and planned production features
@@ -70,3 +108,42 @@ The browser's voice-recognition service may have its own support/privacy restric
 - Siamion Yurtsevich — Software Engineer, AI & Development
 
 The project is a demonstrator. Do not use it for real employee evaluation or automated employment decisions.
+
+## Phone app and glasses browser
+
+ALTIMA can be installed as a web app from the browser menu over HTTPS.
+On iPhone, open the site in Safari and use Share → Add to Home Screen.
+On Android, use Chrome’s Install app or Add to home screen command.
+Chat requires a network connection. The service worker does not cache
+chat, forms or personal data.
+
+Open the chat section and select **Tryb okularów**, or use the URL query
+`?view=glasses`. This view uses larger captions and the existing microphone,
+speech and interruption controls. It requires a browser with the relevant
+speech APIs and microphone permission. It can also run on a phone paired
+with glasses that function as a Bluetooth headset. Native glasses apps,
+heads-up overlays, and device-specific microphone routing require testing
+with the selected hardware and its SDK.
+
+### Meta Quest 3
+
+In Meta Quest Browser, open the HTTPS test site, go to **Demo**, and select
+**Uruchom AR na Quest 3**. This starts a WebXR mixed-reality session with a
+panel anchored in front of the initial viewing position. Aim a controller
+and pull its trigger to navigate the evaluation stages or exit. For the
+full appraisal form and voice chat, return to the regular browser view.
+
+The AR button appears on browsers that report support for `immersive-ar`.
+The app displays instructional cards and does not access camera frames.
+This is a WebXR experience for Quest Browser. It requires no APK.
+
+### Camera input
+
+Use **Włącz kamerę** over HTTPS or on localhost, choose **Zrób zdjęcie**, and
+check the preview. Use **Wyślij zdjęcie do AI** to send the selected JPEG
+and the question from the chat box to the configured OpenAI model. The
+camera preview is local and the app does not stream video to OpenAI.
+The server forwards the selected image with `store: false`; the image is
+not included in subsequent chat requests. Select a model that supports
+image input when overriding `OPENAI_MODEL`. The web camera feature is
+separate from the immersive Quest guide.
